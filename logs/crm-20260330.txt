@@ -75,3 +75,4 @@ CRM.API.Common.ExceptionHandling.BusinessException: Lead with this phone already
 2026-03-30 18:49:00.946 +05:30 [WRN] Failed to determine the https port for redirect.
 2026-03-30 18:49:01.888 +05:30 [INF] Lead created: "e0906c97-e504-49b8-bcab-a67ccf00ee4f", Phone: ****3240
 2026-03-30 18:49:01.953 +05:30 [INF] HTTP POST /create-lead responded 201 in 1008.7550 ms
+2026-03-30 18:50:27.273 +05:30 [INF] Application is shutting down...
