@@ -43,7 +43,6 @@
     <Folder Include="Features\FollowUps\CreateFollowUp Features\" />
     <Folder Include="Features\FollowUps\GetTodayFollowUps\" />
     <Folder Include="Features\Leads\CreateLead\" />
-    <Folder Include="Features\Leads\GetLeads\" />
     <Folder Include="Features\Leads\UpdateLeadStatus\" />
     <Folder Include="Features\Lookups\DeleteLookup\" />
     <Folder Include="Features\Rejoin\CreateRejoin\" />
