@@ -2,15 +2,23 @@ using CRM.API.Common.Extensions;
 using CRM.API.Common.Interfaces;
 using CRM.API.Infrastructure.Notifications;
 using CRM.API.Infrastructure.Persistence;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("NeonProductionDb") 
+                      ?? Environment.GetEnvironmentVariable("ConnectionStrings__NeonProductionDb");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("NeonProductionDb")));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<INotificationService, WhatsAppNotificationService>();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
