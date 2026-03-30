@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "8a7b6c5d-4e3f-2a1b-0c9d-8e7f6a5b4c3d",
+		"name": "Panchakarma CRM - Leads",
+		"description": "Collection for Leads-related endpoints in the Panchakarma Ayurvedic Clinic CRM.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Leads",
+			"item": [
+				{
+					"name": "Create Lead",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Aditya Sharma\",\n    \"phone\": \"+919876543210\",\n    \"status\": \"New\",\n    \"source\": \"WalkIn\",\n    \"reason\": \"BackPain\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/create-lead",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"create-lead"
+							]
+						},
+						"description": "Creates a new lead in the CRM."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5187",
+			"type": "string"
+		}
+	]
+}

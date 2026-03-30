@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "8a7b6c5d-4e3f-2a1b-0c9d-8e7f6a5b4c3d",
 		"name": "Panchakarma CRM - Leads",
-		"description": "Collection for Leads-related endpoints in the Panchakarma Ayurvedic Clinic CRM.",
+		"description": "Collection for Leads-related endpoints in the Panchakarma Ayurvedic Clinic CRM, including validation test cases.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -10,7 +10,7 @@
 			"name": "Leads",
 			"item": [
 				{
-					"name": "Create Lead",
+					"name": "Create Lead - Success (WalkIn)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -37,7 +37,39 @@
 								"create-lead"
 							]
 						},
-						"description": "Creates a new lead in the CRM."
+						"description": "Successfully creates a new lead using a valid source 'WalkIn'."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lead - Failure (FakeSource)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Lead\",\n    \"phone\": \"+910000000000\",\n    \"status\": \"New\",\n    \"source\": \"FakeSource\",\n    \"reason\": \"BackPain\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/create-lead",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"create-lead"
+							]
+						},
+						"description": "Should fail with 400 Bad Request if the source is invalid (e.g., 'FakeSource')."
 					},
 					"response": []
 				}
