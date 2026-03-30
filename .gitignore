@@ -130,3 +130,7 @@ Properties/PublishProfiles/*
 
 # Project documentation
 PanchakarmaCRM_Guide_v3.md
+
+appsettings.Development.json
+bin/
+obj/

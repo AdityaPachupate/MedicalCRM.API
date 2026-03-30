@@ -1,6 +1,7 @@
-namespace CRM.API.Common.Enums;
-
-public enum LeadStatus
+namespace CRM.API.Common.Enums
 {
-    New, Contacted, Qualified, Lost, Converted , Hot , Moderate , Cold
+    public enum LeadStatus
+    {
+        New, Contacted, Qualified, Lost, Converted, Hot, Cold, Warm
+    }
 }
