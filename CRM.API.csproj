@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include=" Features\Lookups\AddLookup\" />
+    <Folder Include=" Features\Lookups\GetLookups\" />
+    <Folder Include="Common\Constants\" />
     <Folder Include="Common\Enums\" />
     <Folder Include="Common\Extensions\" />
     <Folder Include="Common\Interfaces\" />
@@ -38,6 +41,8 @@
     <Folder Include="Features\FollowUps\GetTodayFollowUps\" />
     <Folder Include="Features\Leads\CreateLead\" />
     <Folder Include="Features\Leads\GetLeads\" />
+    <Folder Include="Features\Leads\UpdateLeadStatus\" />
+    <Folder Include="Features\Lookups\DeleteLookup\" />
     <Folder Include="Features\Rejoin\CreateRejoin\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Infrastructure\Notifications\" />
