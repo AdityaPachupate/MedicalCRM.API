@@ -11,7 +11,14 @@ namespace CRM.API.Common.ExceptionHandling
             Exception exception, 
             CancellationToken cancellationToken)
         {
-            logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+            if (exception is BusinessException)
+            {
+                logger.LogWarning("Business exception: {Message}", exception.Message);
+            }
+            else
+            {
+                logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+            }
 
             var (statusCode, title, actionMessage) = exception switch
             {
