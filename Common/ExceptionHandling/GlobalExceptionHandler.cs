@@ -29,6 +29,8 @@ namespace CRM.API.Common.ExceptionHandling
                 Type = exception.GetType().Name
             };
 
+            problemDetails.Extensions["traceId"] = httpContext.Items["CorrelationId"];
+
             httpContext.Response.StatusCode = (int)statusCode;
 
             await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);

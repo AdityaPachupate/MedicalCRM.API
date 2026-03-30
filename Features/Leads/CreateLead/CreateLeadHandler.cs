@@ -1,4 +1,5 @@
 using CRM.API.Common.ExceptionHandling;
+using CRM.API.Common.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,11 @@ namespace CRM.API.Features.Leads.CreateLead
             await db.Leads.AddAsync(lead, cancellationToken);
             await db.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Lead created successfully: {Lead}", lead.Name);
+            logger.LogInformation(
+                "Lead created: {LeadId}, Phone: {Phone}",
+                lead.Id,
+                lead.Phone.MaskPhone()
+            );
 
             return lead.Adapt<CreateLeadResponse>();
         }

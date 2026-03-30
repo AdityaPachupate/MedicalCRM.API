@@ -1,3 +1,4 @@
+using CRM.API.Common.Middleware;
 using CRM.API.Common.ExceptionHandling;
 using CRM.API.Common.Extensions;
 using CRM.API.Common.Interfaces;
@@ -6,10 +7,19 @@ using CRM.API.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Serilog;
 
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/crm-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -17,15 +27,19 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("NeonProductionDb") 
+var connectionString = builder.Configuration.GetConnectionString("NeonProductionDb")
                       ?? Environment.GetEnvironmentVariable("ConnectionStrings__NeonProductionDb");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<INotificationService, WhatsAppNotificationService>();
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,6 +59,7 @@ if (app.Environment.IsDevelopment())
     app.MigrateDatabase();
 }
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
