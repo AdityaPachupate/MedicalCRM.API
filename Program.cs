@@ -37,7 +37,7 @@ var connectionString = builder.Configuration.GetConnectionString("NeonProduction
                       ?? Environment.GetEnvironmentVariable("ConnectionStrings__NeonProductionDb");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 builder.Services.AddScoped<INotificationService, WhatsAppNotificationService>();
 
