@@ -1,0 +1,55 @@
+using CRM.API.Common.Constants;
+using CRM.API.Common.Enums;
+using CRM.API.Common.ExceptionHandling;
+using CRM.API.Domain;
+using CRM.API.Infrastructure.Persistence;
+using Mapster;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+namespace CRM.API.Features.FollowUps.CreateFollowUp;
+
+public class CreateFollowUpHandler(AppDbContext db, ILogger<CreateFollowUpHandler> logger) 
+    : IRequestHandler<CreateFollowUpCommand, CreateFollowUpResponse>
+{
+    public async Task<CreateFollowUpResponse> Handle(CreateFollowUpCommand command, CancellationToken cancellationToken)
+    {
+        // 1. Verify lead exists and get it
+        var lead = await db.Leads
+            .FirstOrDefaultAsync(l => l.Id == command.Request.LeadId, cancellationToken);
+            
+        if (lead == null)
+        {
+            throw new BusinessException(LoggingMessages.NotFound, "Creating FollowUp");
+        }
+
+        // 2. Prevent duplicate pending follow-ups for the same day
+        var duplicateExists = await db.FollowUps
+            .AnyAsync(f => f.LeadId == command.Request.LeadId 
+                           && f.Status == FollowUpStatus.Pending 
+                           && f.FollowUpDate == command.Request.FollowUpDate, cancellationToken);
+
+        if (duplicateExists)
+        {
+            throw new BusinessException("A pending follow-up already exists for this lead on this date.", "Creating FollowUp");
+        }
+
+        // 3. Map request to domain entity
+        var followUp = command.Request.Adapt<FollowUp>();
+        followUp.Id = Guid.NewGuid();
+        followUp.Status = FollowUpStatus.Pending;
+        followUp.CreatedAt = DateTime.UtcNow;
+
+        // 4. Bubble Up: Update Lead's UpdatedAt
+        lead.UpdatedAt = DateTime.UtcNow;
+
+        // 5. Save to database
+        await db.FollowUps.AddAsync(followUp, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Follow-up created for Lead {LeadId} and Lead UpdatedAt refreshed.", followUp.LeadId);
+
+        // 6. Return response
+        return followUp.Adapt<CreateFollowUpResponse>();
+    }
+}
