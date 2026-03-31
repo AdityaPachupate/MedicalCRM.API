@@ -5,7 +5,7 @@ using MediatR;
 
 namespace CRM.API.Features.Leads.GetLeads
 {
-    public record GetLeadsQuery(LeadStatus? status, string? source, int PageNumber = 1, int PageSize = 10) : IRequest<PagedResult<GetLeadsResponse>>
+    public record GetLeadsQuery(LeadStatus? Status, string? Source, int PageNumber = 1, int PageSize = 10) : IRequest<PagedResult<GetLeadsResponse>>
     {
     }
 }

@@ -14,14 +14,14 @@ namespace CRM.API.Features.Leads.GetLeads
         {
             IQueryable<Lead> queryableLeads = db.Leads.AsQueryable();
 
-            if (query.status.HasValue)
+            if (query.Status.HasValue)
             {
-                queryableLeads = queryableLeads.Where(l => l.Status == query.status.Value);
+                queryableLeads = queryableLeads.Where(l => l.Status == query.Status.Value);
             }
 
-            if (!string.IsNullOrEmpty(query.source))
+            if (!string.IsNullOrEmpty(query.Source))
             {
-                queryableLeads = queryableLeads.Where(l => l.Source == query.source);
+                queryableLeads = queryableLeads.Where(l => l.Source == query.Source);
             }
 
             var totalCount = await queryableLeads.CountAsync(cancellationToken);
