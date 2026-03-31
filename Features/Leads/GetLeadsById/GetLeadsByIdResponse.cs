@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CRM.API.Common.Enums;
 
 namespace CRM.API.Features.Leads.GetLeadsById
@@ -13,7 +9,52 @@ namespace CRM.API.Features.Leads.GetLeadsById
         LeadStatus Status,
         string Source,
         string Reason,
-        DateTime CreatedAt
+        DateTime CreatedAt,
+        DateTime? UpdatedAt,
+        List<FollowUpDto> FollowUps,
+        List<EnrollmentDto> Enrollments,
+        List<RejoinRecordDto> RejoinRecords
     );
 
+    public record FollowUpDto(
+        Guid Id,
+        DateOnly FollowUpDate,
+        string Notes,
+        FollowUpStatus Status,
+        DateTime CreatedAt,
+        DateTime? CompletedAt
+    );
+
+    public record EnrollmentDto(
+        Guid Id,
+        Guid PackageId,
+        string PackageName,
+        decimal PackageCostSnapshot,
+        int PackageDurationSnapshot,
+        DateOnly StartDate,
+        DateOnly EndDate,
+        DateTime CreatedAt,
+        BillDto? Bill
+    );
+
+    public record RejoinRecordDto(
+        Guid Id,
+        Guid PackageId,
+        string PackageName,
+        decimal PackageCostSnapshot,
+        int PackageDurationSnapshot,
+        DateOnly StartDate,
+        DateOnly EndDate,
+        DateTime CreatedAt,
+        BillDto? Bill
+    );
+
+    public record BillDto(
+        Guid Id,
+        decimal PackageAmount,
+        decimal AdvanceAmount,
+        decimal PendingAmount,
+        decimal MedicineBillingAmount,
+        DateTime CreatedAt
+    );
 }

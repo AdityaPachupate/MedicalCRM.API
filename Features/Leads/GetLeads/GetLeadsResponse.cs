@@ -1,4 +1,4 @@
-﻿namespace CRM.API.Features.Leads.GetLeads
+namespace CRM.API.Features.Leads.GetLeads
 {
     using CRM.API.Common.Enums;
 
@@ -9,6 +9,7 @@
     LeadStatus Status,
     string Source,
     string Reason,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    DateTime? UpdatedAt
     );
 }
