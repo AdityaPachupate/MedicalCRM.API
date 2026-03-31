@@ -132,3 +132,4 @@ Leads_Endpoints.postman_collection.json
 # Ignore all log files and the logs directory
 logs/
 *.log
+ToDoFeattures.md

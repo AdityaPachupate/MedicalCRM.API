@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Serilog;
 using Serilog.Events;
+using CRM.API.Infrastructure.Persistence.Jobs;
 
 DotNetEnv.Env.Load();
 
@@ -47,6 +48,7 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Host.UseSerilog();
+builder.Services.AddHostedService<TrashCleanupJob>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
