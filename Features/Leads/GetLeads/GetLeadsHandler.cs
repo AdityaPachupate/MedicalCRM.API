@@ -1,5 +1,6 @@
 namespace CRM.API.Features.Leads.GetLeads
 {
+    using CRM.API.Common.Constants;
     using CRM.API.Common.ExceptionHandling;
     using CRM.API.Common.Models;
     using CRM.API.Domain;
@@ -13,6 +14,16 @@ namespace CRM.API.Features.Leads.GetLeads
         async Task<PagedResult<GetLeadsResponse>> IRequestHandler<GetLeadsQuery, PagedResult<GetLeadsResponse>>.Handle(GetLeadsQuery query, CancellationToken cancellationToken)
         {
             IQueryable<Lead> queryableLeads = db.Leads.AsQueryable();
+
+            if (queryableLeads == null)
+            {
+                throw new BusinessException(
+                    LoggingMessages.DatabaseError,
+                    "Accessing the Leads collection",
+                    System.Net.HttpStatusCode.InternalServerError
+                );
+            }
+
 
             if (query.Status.HasValue)
             {

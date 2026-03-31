@@ -10,6 +10,7 @@ using CRM.API.Infrastructure.Persistence;
 using Mapster;
 using MediatR;
 using Microsoft.Extensions.Logging.Abstractions;
+using CRM.API.Common.Constants;
 
 namespace CRM.API.Features.Leads.CreateLead
 {
@@ -20,8 +21,8 @@ namespace CRM.API.Features.Leads.CreateLead
             var alreadyExists = await db.Leads.AnyAsync(x => x.Phone == command.Request.Phone, cancellationToken);
             if (alreadyExists)
             {
-                logger.LogInformation("Lead with this phone already exists: {Phone}", command.Request.Phone);
-                throw new BusinessException("Lead with this phone already exists.", "Adding New Lead");
+                logger.LogInformation("{Message}: {Phone}", LoggingMessages.ResourceExists, command.Request.Phone);
+                throw new BusinessException(LoggingMessages.ResourceExists, "Adding New Lead");
             }
 
             Lead lead = command.Request.Adapt<Lead>();
@@ -29,7 +30,8 @@ namespace CRM.API.Features.Leads.CreateLead
             await db.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation(
-                "Lead created: {LeadId}, Phone: {Phone}",
+                "{Message}: {LeadId}, Phone: {Phone}",
+                LoggingMessages.ResourceCreated,
                 lead.Id,
                 lead.Phone.MaskPhone()
             );

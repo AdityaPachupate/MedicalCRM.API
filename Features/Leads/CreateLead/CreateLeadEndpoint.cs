@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CRM.API.Common.Interfaces;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CRM.API.Features.Leads.CreateLead
 {
@@ -12,13 +13,19 @@ namespace CRM.API.Features.Leads.CreateLead
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("/create-lead", async (
+            app.MapPost("/leads", async (
                 CreateLeadRequest request, IMediator mediator, CancellationToken cancellationToken
             ) =>
             {
                 var result = await mediator.Send(new CreateLeadCommand(request), cancellationToken);
-                return Results.Created($"/api/create-lead/{result.Id}", result);
-            });
+                return Results.CreatedAtRoute("GetLeadById", new { id = result.Id }, result);
+            })
+            .WithName("CreateLead")
+            .WithTags("Leads")
+            .Produces<CreateLeadResponse>(StatusCodes.Status201Created)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status409Conflict)
+            .WithSummary("Create a new lead in the system");
         }
     }
 }
