@@ -9,7 +9,9 @@ namespace CRM.API.Features.Leads.DeleteLead
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapDelete("/leads/{id:guid}", async (
-                Guid id, [FromQuery] bool isPermanent, IMediator mediator, CancellationToken cancellationToken
+                Guid id, IMediator mediator,
+                CancellationToken cancellationToken,
+                [FromQuery] bool isPermanent = false
             ) =>
             {
                 var result = await mediator.Send(new DeleteLeadCommand(new DeleteLeadRequest(id), isPermanent), cancellationToken);
