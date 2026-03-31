@@ -9,17 +9,17 @@ namespace CRM.API.Features.Leads.DeleteLead
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapDelete("/leads/{id:guid}", async (
-                Guid id, IMediator mediator, CancellationToken cancellationToken
+                Guid id, [FromQuery] bool isPermanent, IMediator mediator, CancellationToken cancellationToken
             ) =>
             {
-                var result = await mediator.Send(new DeleteLeadCommand(new DeleteLeadRequest(id)), cancellationToken);
+                var result = await mediator.Send(new DeleteLeadCommand(new DeleteLeadRequest(id), isPermanent), cancellationToken);
                 return Results.Ok(result);
             })
             .WithName("DeleteLead")
             .WithTags("Leads")
             .Produces<DeleteLeadResponse>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .WithSummary("Delete a lead by ID");
+            .WithSummary("Delete a lead by ID (Use ?isPermanent=true for hard delete)");
         }
     }
 }

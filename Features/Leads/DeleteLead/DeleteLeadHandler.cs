@@ -14,7 +14,8 @@ namespace CRM.API.Features.Leads.DeleteLead
         public async Task<DeleteLeadResponse> Handle(DeleteLeadCommand command, CancellationToken cancellationToken)
         {
             var lead = await db.Leads
-                                .FirstOrDefaultAsync(l => l.Id == command.Request.Id);
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(l => l.Id == command.Request.Id, cancellationToken);
 
             if (lead == null)
             {
@@ -26,15 +27,26 @@ namespace CRM.API.Features.Leads.DeleteLead
 
             }
 
-
-            db.Leads.Remove(lead);
-            await db.SaveChangesAsync(cancellationToken);
-
-            logger.LogInformation(
+            if (command.IsPermanent)
+            {
+                // Hard Delete (Remove from DB permanently)
+                db.Leads.Remove(lead);
+                logger.LogInformation(
                 "Lead with ID {LeadId} deleted successfully",
                 command.Request.Id
             );
-
+            }
+            else
+            {
+                // Soft Delete (Move to Trash)
+                lead.IsDeleted = true;
+                lead.DeletedAt = DateTime.UtcNow;
+                logger.LogInformation(
+                "Lead with ID {LeadId} moved to Trash",
+                command.Request.Id
+            );
+            }
+            await db.SaveChangesAsync(cancellationToken);
             return new DeleteLeadResponse(true);
         }
     }

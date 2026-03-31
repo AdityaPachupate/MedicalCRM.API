@@ -8,10 +8,12 @@ namespace CRM.API.Domain
         public string Name { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public LeadStatus Status { get; set; }
-        public string Source { get; set; } = string.Empty;   // LookupValue.Code
-        public string Reason { get; set; } = string.Empty;   // LookupValue.Code
+        public string Source { get; set; } = string.Empty;
+        public string Reason { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public bool IsDeleted { get; set; }
         public List<FollowUp> FollowUps { get; set; } = new();
         public List<Enrollment> Enrollments { get; set; } = new();
         public List<RejoinRecord> RejoinRecords { get; set; } = new();
