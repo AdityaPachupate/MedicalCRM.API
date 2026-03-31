@@ -11,7 +11,7 @@ namespace CRM.API.Domain
         public string Source { get; set; } = string.Empty;   // LookupValue.Code
         public string Reason { get; set; } = string.Empty;   // LookupValue.Code
         public DateTime CreatedAt { get; set; }
-        public Guid? ClinicId { get; set; }                   // Future multi-clinic support
+        public DateTime? UpdatedAt { get; set; }
         public List<FollowUp> FollowUps { get; set; } = new();
         public List<Enrollment> Enrollments { get; set; } = new();
         public List<RejoinRecord> RejoinRecords { get; set; } = new();

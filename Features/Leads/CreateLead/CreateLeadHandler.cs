@@ -1,16 +1,11 @@
+using CRM.API.Common.Constants;
 using CRM.API.Common.ExceptionHandling;
 using CRM.API.Common.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using CRM.API.Domain;
 using CRM.API.Infrastructure.Persistence;
 using Mapster;
 using MediatR;
-using Microsoft.Extensions.Logging.Abstractions;
-using CRM.API.Common.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRM.API.Features.Leads.CreateLead
 {

@@ -5,6 +5,8 @@ using CRM.API.Common.Interfaces;
 using CRM.API.Infrastructure.Notifications;
 using CRM.API.Infrastructure.Persistence;
 using FluentValidation;
+using CRM.API.Common.Behaviors;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Serilog;
@@ -40,6 +42,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<INotificationService, WhatsAppNotificationService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 

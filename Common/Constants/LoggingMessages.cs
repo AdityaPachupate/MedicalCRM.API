@@ -8,4 +8,5 @@ public static class LoggingMessages
     public const string Conflict = "A conflict occurred with the current state of the resource";
     public const string ResourceExists = "Resource already exists";
     public const string ResourceCreated = "Resource created";
+    public const string ResourceUpdated = "Resource updated";
 }
