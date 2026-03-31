@@ -1,5 +1,3 @@
-using System;
-using CRM.API.Common.Enums;
 using CRM.API.Common.Interfaces;
 using MediatR;
 
