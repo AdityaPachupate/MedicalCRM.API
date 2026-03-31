@@ -20,6 +20,8 @@ namespace CRM.API.Features.Leads.GetLeadsById
         Guid Id,
         DateOnly FollowUpDate,
         string Notes,
+        string Source,
+        FollowUpPriority Priority,
         FollowUpStatus Status,
         DateTime CreatedAt,
         DateTime? CompletedAt

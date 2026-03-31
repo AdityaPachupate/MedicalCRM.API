@@ -8,6 +8,8 @@ namespace CRM.API.Domain
         public Guid LeadId { get; set; }
         public DateOnly FollowUpDate { get; set; }
         public string Notes { get; set; } = string.Empty;
+        public string Source { get; set; } = string.Empty; // Call, WhatsApp, etc. (LookupValue.Code)
+        public FollowUpPriority Priority { get; set; }
         public FollowUpStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
