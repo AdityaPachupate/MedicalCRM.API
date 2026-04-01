@@ -25,7 +25,7 @@ namespace CRM.API.Features.FollowUps.DeleteFollowUp
             {
                 throw new BusinessException(
                    LoggingMessages.NotFound,
-                   $"Deleting lead with ID {command.Request.Id}",
+                   $"Deleting FollowUp with ID {command.Request.Id}",
                    System.Net.HttpStatusCode.NotFound
                );
             }
@@ -33,7 +33,7 @@ namespace CRM.API.Features.FollowUps.DeleteFollowUp
             if (command.IsPermanent)
             {
                 db.Remove(followUp);
-                await db.SaveChangesAsync(cancellationToken);
+
                 logger.LogInformation(
                 "FollowUp with ID {FollowUpId} deleted successfully",
                 command.Request.Id);
@@ -42,6 +42,7 @@ namespace CRM.API.Features.FollowUps.DeleteFollowUp
             {
                 followUp.IsDeleted = true;
                 followUp.DeletedAt = DateTime.UtcNow;
+
                 logger.LogInformation(
                 "FollowUp with ID {FollowUpId} moved to Trash",
                 command.Request.Id);
