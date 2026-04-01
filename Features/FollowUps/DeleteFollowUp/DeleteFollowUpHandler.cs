@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CRM.API.Common.Constants;
 using CRM.API.Common.ExceptionHandling;
 using CRM.API.Infrastructure.Persistence;
