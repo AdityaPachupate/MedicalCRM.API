@@ -14,6 +14,10 @@ namespace CRM.API.Infrastructure.Persistence.Configurations
             builder.Property(p => p.DurationInDays).IsRequired();
             builder.Property(p => p.Cost).HasColumnType("decimal(10,2)");
             builder.Property(p => p.CreatedAt).HasDefaultValueSql("now()");
+            builder.Property(p => p.UpdatedAt).HasDefaultValueSql("now()");
+
+            builder.HasIndex(p => p.Name).IsUnique().HasFilter("\"IsDeleted\" = false");
+            builder.HasQueryFilter(p => !p.IsDeleted);
 
         }
     }

@@ -15,7 +15,6 @@ namespace CRM.API.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Lead>().HasQueryFilter(l => !l.IsDeleted);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }

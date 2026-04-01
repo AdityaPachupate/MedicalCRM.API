@@ -13,7 +13,9 @@ namespace CRM.API.Features.Leads.GetLeads
     {
         async Task<PagedResult<GetLeadsResponse>> IRequestHandler<GetLeadsQuery, PagedResult<GetLeadsResponse>>.Handle(GetLeadsQuery query, CancellationToken cancellationToken)
         {
-            IQueryable<Lead> queryableLeads = db.Leads.AsQueryable();
+            IQueryable<Lead> queryableLeads = query.IsTrash 
+                ? db.Leads.IgnoreQueryFilters().Where(l => l.IsDeleted)
+                : db.Leads.AsQueryable();
 
             if (queryableLeads == null)
             {

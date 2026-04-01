@@ -11,8 +11,10 @@ namespace CRM.API.Domain
         public string Name { get; set; } = string.Empty;
         public int DurationInDays { get; set; }
         public decimal Cost { get; set; }
-        public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; }
-        public Guid? ClinicId { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
+
     }
 }
