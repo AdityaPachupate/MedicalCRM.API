@@ -14,6 +14,8 @@ namespace CRM.API.Domain
         public FollowUpStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public Lead Lead { get; set; } = null!;
     }
 }

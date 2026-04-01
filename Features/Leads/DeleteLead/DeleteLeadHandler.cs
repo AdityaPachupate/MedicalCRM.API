@@ -33,8 +33,7 @@ namespace CRM.API.Features.Leads.DeleteLead
                 db.Leads.Remove(lead);
                 logger.LogInformation(
                 "Lead with ID {LeadId} deleted successfully",
-                command.Request.Id
-            );
+                command.Request.Id);
             }
             else
             {

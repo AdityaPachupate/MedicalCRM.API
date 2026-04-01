@@ -14,9 +14,11 @@ namespace CRM.API.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.Outcome)
                 .HasConversion<string>();
-                
+
             builder.Property(x => x.Status)
                 .HasConversion<string>();
+
+            builder.HasQueryFilter(f => !f.IsDeleted);
         }
     }
 }
