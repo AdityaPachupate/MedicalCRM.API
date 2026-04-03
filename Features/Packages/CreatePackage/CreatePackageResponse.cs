@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace CRM.API.Features.Packages.CreatePackage
 {
     public record CreatePackageResponse(
-        string PackageName,
+        Guid Id,
         string Name,
         int DurationInDays,
         decimal Cost

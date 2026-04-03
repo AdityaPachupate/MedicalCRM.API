@@ -3,6 +3,7 @@ using System;
 using CRM.API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CRM.API.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403143220_AddSoftDeleteToPackages")]
+    partial class AddSoftDeleteToPackages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +63,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
                     b.HasIndex("RejoinRecordId")
                         .IsUnique();
 
-                    b.ToTable("Bills", (string)null);
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("CRM.API.Domain.Enrollment", b =>
@@ -99,7 +102,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PackageId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("CRM.API.Domain.FollowUp", b =>
@@ -150,7 +153,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("LeadId");
 
-                    b.ToTable("FollowUps", (string)null);
+                    b.ToTable("FollowUps");
                 });
 
             modelBuilder.Entity("CRM.API.Domain.Lead", b =>
@@ -203,7 +206,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Leads", (string)null);
+                    b.ToTable("Leads");
                 });
 
             modelBuilder.Entity("CRM.API.Domain.LookupValue", b =>
@@ -241,7 +244,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
                     b.HasIndex("Category", "Code")
                         .IsUnique();
 
-                    b.ToTable("LookupValues", (string)null);
+                    b.ToTable("LookupValues");
 
                     b.HasData(
                         new
@@ -358,7 +361,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("\"IsDeleted\" = false");
 
-                    b.ToTable("Packages", (string)null);
+                    b.ToTable("Packages");
                 });
 
             modelBuilder.Entity("CRM.API.Domain.RejoinRecord", b =>
@@ -397,7 +400,7 @@ namespace CRM.API.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PackageId");
 
-                    b.ToTable("RejoinRecords", (string)null);
+                    b.ToTable("RejoinRecords");
                 });
 
             modelBuilder.Entity("CRM.API.Domain.Bill", b =>

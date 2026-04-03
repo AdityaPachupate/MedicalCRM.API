@@ -15,6 +15,5 @@ namespace CRM.API.Domain
         public DateTime CreatedAt { get; set; }
         public Lead Lead { get; set; } = null!;
         public Bill? Bill { get; set; }
-        public Guid? ClinicId { get; set; }
     }
 }
