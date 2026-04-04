@@ -21,7 +21,7 @@ namespace CRM.API.Features.FollowUps.DeleteFollowUp
             {
                 throw new BusinessException(
                    LoggingMessages.NotFound,
-                   $"Deleting FollowUp with ID {command.Request.Id}",
+                   $"FollowUp with ID {command.Request.Id} not found",
                    System.Net.HttpStatusCode.NotFound
                );
             }

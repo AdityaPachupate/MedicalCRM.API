@@ -20,7 +20,11 @@ namespace CRM.API.Features.FollowUps.RestoreFollowUp
 
             if (followUp == null)
             {
-                throw new BusinessException(LoggingMessages.NotFound, $"Restoring Follow-Up with ID {command.Request.Id}");
+                throw new BusinessException(
+                   LoggingMessages.NotFound,
+                   $"FollowUp with ID {command.Request.Id} not found",
+                   System.Net.HttpStatusCode.NotFound
+               );
             }
 
             followUp.IsDeleted = false;

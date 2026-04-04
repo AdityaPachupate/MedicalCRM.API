@@ -5,6 +5,7 @@ using CRM.API.Domain;
 using CRM.API.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace CRM.API.Features.FollowUps.CompleteFollowUp;
 
@@ -22,12 +23,12 @@ public class CompleteFollowUpHandler(AppDbContext db, ILogger<CompleteFollowUpHa
 
         if (followUp == null)
         {
-            throw new BusinessException(LoggingMessages.NotFound, "Completing FollowUp");
+            throw new BusinessException(LoggingMessages.NotFound, $"FollowUp with ID {request.FollowUpId} not found", HttpStatusCode.NotFound);
         }
 
         if (followUp.Status != FollowUpStatus.Pending)
         {
-            throw new BusinessException("Only pending follow-ups can be completed.", "Completing FollowUp");
+            throw new BusinessException("Only pending follow-ups can be completed.", "Completing FollowUp", HttpStatusCode.BadRequest);
         }
 
         var lead = followUp.Lead;

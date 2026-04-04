@@ -19,5 +19,6 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
         builder.HasOne(e => e.Bill)
                .WithOne(b => b.Enrollment)
                .HasForeignKey<Bill>(b => b.EnrollmentId);
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

@@ -1,13 +1,11 @@
 using CRM.API.Common.Enums;
+using CRM.API.Domain;
 using CRM.API.Infrastructure.Persistence;
+using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRM.API.Features.FollowUps.GetTodayFollowUps;
-
-
-
-
 
 public class GetTodayFollowUpsHandler(AppDbContext db)
     : IRequestHandler<GetTodayFollowUpsQuery, List<GetTodayFollowUpsResponse>>
@@ -16,20 +14,14 @@ public class GetTodayFollowUpsHandler(AppDbContext db)
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
+        var config = new TypeAdapterConfig();
+        config.NewConfig<FollowUp, GetTodayFollowUpsResponse>()
+            .Map(dest => dest.IsOverdue, src => src.FollowUpDate < today);
+
         var followUps = await db.FollowUps
-            .Include(f => f.Lead)
+            .AsNoTracking()
             .Where(f => f.Status == FollowUpStatus.Pending && f.FollowUpDate <= today)
-            .Select(f => new GetTodayFollowUpsResponse(
-                f.Id,
-                f.LeadId,
-                f.Lead.Name,
-                f.Lead.Phone,
-                f.FollowUpDate,
-                f.Status,
-                f.Priority,
-                f.Notes,
-                f.FollowUpDate < today
-            ))
+            .ProjectToType<GetTodayFollowUpsResponse>(config)
             .OrderByDescending(f => f.IsOverdue)
             .ThenByDescending(f => f.Priority)
             .ThenBy(f => f.FollowUpDate)

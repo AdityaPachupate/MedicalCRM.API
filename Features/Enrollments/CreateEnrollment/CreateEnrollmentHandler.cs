@@ -6,6 +6,7 @@ using CRM.API.Infrastructure.Persistence;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace CRM.API.Features.Enrollments.CreateEnrollment
 {
@@ -16,10 +17,10 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
         {
             // 1. Fetch Related Entities
             var lead = await db.Leads.FindAsync([command.Request.LeadId], cancellationToken) 
-                       ?? throw new KeyNotFoundException($"Lead with ID {command.Request.LeadId} not found");
+                       ?? throw new BusinessException(LoggingMessages.NotFound, $"Lead with ID {command.Request.LeadId} not found", HttpStatusCode.NotFound);
             
             var package = await db.Packages.FindAsync([command.Request.PackageId], cancellationToken) 
-                          ?? throw new KeyNotFoundException($"Package with ID {command.Request.PackageId} not found");
+                          ?? throw new BusinessException(LoggingMessages.NotFound, $"Package with ID {command.Request.PackageId} not found", HttpStatusCode.NotFound);
 
             // 2. Map and Calculate
             var enrollment = new Enrollment

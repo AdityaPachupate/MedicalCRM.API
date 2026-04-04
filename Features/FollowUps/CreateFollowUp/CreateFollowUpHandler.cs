@@ -6,6 +6,7 @@ using CRM.API.Infrastructure.Persistence;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace CRM.API.Features.FollowUps.CreateFollowUp;
 
@@ -20,7 +21,7 @@ public class CreateFollowUpHandler(AppDbContext db, ILogger<CreateFollowUpHandle
             
         if (lead == null)
         {
-            throw new BusinessException(LoggingMessages.NotFound, "Creating FollowUp");
+            throw new BusinessException(LoggingMessages.NotFound, $"Lead with ID {command.Request.LeadId} not found", HttpStatusCode.NotFound);
         }
 
         // 2. Prevent duplicate pending follow-ups for the same day

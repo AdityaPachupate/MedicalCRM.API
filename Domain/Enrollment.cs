@@ -15,5 +15,7 @@ namespace CRM.API.Domain
         public DateTime CreatedAt { get; set; }
         public Lead Lead { get; set; } = null!;
         public Bill? Bill { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }
