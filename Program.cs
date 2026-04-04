@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using Serilog;
 using Serilog.Events;
 using CRM.API.Infrastructure.Persistence.Jobs;
+using CRM.API.Infrastructure.Persistence.Repositories;
 
 DotNetEnv.Env.Load();
 
@@ -41,6 +42,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 builder.Services.AddScoped<INotificationService, WhatsAppNotificationService>();
+builder.Services.AddScoped<IBillRepository, BillRepository>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));

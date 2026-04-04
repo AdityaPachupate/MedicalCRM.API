@@ -4,23 +4,20 @@ namespace CRM.API.Features.Enrollments.GetEnrollmentById
         Guid Id,
         Guid LeadId,
         string LeadName,
-        string LeadPhone,
         Guid PackageId,
         string PackageName,
-        decimal PackageCostSnapshot,
-        int PackageDurationSnapshot,
         DateOnly StartDate,
         DateOnly EndDate,
+        decimal PackageCostSnapshot,
+        int PackageDurationSnapshot,
+        bool IsDeleted,
+        DateTime? DeletedAt,
         DateTime CreatedAt,
-        BillDto? Bill
-    );
-
-    public record BillDto(
-        Guid Id,
-        decimal PackageAmount,
-        decimal AdvanceAmount,
-        decimal PendingAmount,
+        
+        // Financial Summary from linked Bill
+        decimal InitialAmount,
         decimal MedicineBillingAmount,
-        DateTime CreatedAt
+        decimal AmountPaid,
+        decimal PendingAmount
     );
 }

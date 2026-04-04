@@ -8,6 +8,9 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
         DateOnly EndDate,
         decimal PackageCostSnapshot,
         int PackageDurationSnapshot,
+        decimal AmountPaid,
+        decimal MedicineBillingAmount,
+        decimal PendingAmount,
         DateTime CreatedAt
     );
 }

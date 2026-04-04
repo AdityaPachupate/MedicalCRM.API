@@ -1,7 +1,6 @@
 using CRM.API.Common.Constants;
 using CRM.API.Common.ExceptionHandling;
 using CRM.API.Infrastructure.Persistence;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -12,23 +11,43 @@ namespace CRM.API.Features.Enrollments.GetEnrollmentById
     {
         public async Task<GetEnrollmentByIdResponse> Handle(GetEnrollmentByIdQuery query, CancellationToken cancellationToken)
         {
-            var enrollment = await db.Enrollments
+            // Use manual projection to flatten the response and include Bill data efficiently
+            var response = await db.Enrollments
                 .AsNoTracking()
-                .IgnoreQueryFilters() // Allow fetching trashed items if ID is known
+                .IgnoreQueryFilters() 
                 .Where(e => e.Id == query.Id)
-                .ProjectToType<GetEnrollmentByIdResponse>()
+                .Select(e => new GetEnrollmentByIdResponse(
+                    e.Id,
+                    e.LeadId,
+                    e.Lead.Name,
+                    e.PackageId,
+                    e.Package.Name,
+                    e.StartDate,
+                    e.EndDate,
+                    e.PackageCostSnapshot,
+                    e.PackageDurationSnapshot,
+                    e.IsDeleted,
+                    e.DeletedAt,
+                    e.CreatedAt,
+                    
+                    // Bill data (handling potential nulls for historical data)
+                    e.Bill != null ? e.Bill.InitialAmount : 0,
+                    e.Bill != null ? e.Bill.MedicineBillingAmount : 0,
+                    e.Bill != null ? e.Bill.AmountPaid : 0,
+                    e.Bill != null ? e.Bill.PendingAmount : 0
+                ))
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (enrollment == null)
+            if (response == null)
             {
                 throw new BusinessException(
                     LoggingMessages.NotFound,
-                    $"Fetching enrollment with ID {query.Id}",
+                    $"Fetching enrollment {query.Id}",
                     HttpStatusCode.NotFound
                 );
             }
 
-            return enrollment;
+            return response;
         }
     }
 }

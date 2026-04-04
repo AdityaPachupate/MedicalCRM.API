@@ -11,6 +11,8 @@ namespace CRM.API.Infrastructure.Persistence
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
         public DbSet<RejoinRecord> RejoinRecords => Set<RejoinRecord>();
         public DbSet<Bill> Bills => Set<Bill>();
+        public DbSet<Medicine> Medicines => Set<Medicine>();
+        public DbSet<BillItem> BillItems => Set<BillItem>();
         public DbSet<LookupValue> LookupValues => Set<LookupValue>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

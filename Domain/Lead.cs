@@ -1,4 +1,6 @@
 using CRM.API.Common.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace CRM.API.Domain
 {
@@ -14,8 +16,10 @@ namespace CRM.API.Domain
         public DateTime? UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
         public bool IsDeleted { get; set; }
+        
         public List<FollowUp> FollowUps { get; set; } = new();
         public List<Enrollment> Enrollments { get; set; } = new();
+        public List<Bill> Bills { get; set; } = new();
         public List<RejoinRecord> RejoinRecords { get; set; } = new();
     }
 }

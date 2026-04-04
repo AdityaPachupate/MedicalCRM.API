@@ -1,34 +1,36 @@
 using CRM.API.Common.Constants;
 using CRM.API.Common.Enums;
 using CRM.API.Common.ExceptionHandling;
+using CRM.API.Common.Interfaces;
 using CRM.API.Domain;
 using CRM.API.Infrastructure.Persistence;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace CRM.API.Features.Enrollments.CreateEnrollment
 {
-    public class CreateEnrollmentHandler(AppDbContext db, ILogger<CreateEnrollmentHandler> logger) 
+    public class CreateEnrollmentHandler(AppDbContext db, IBillRepository billRepository, ILogger<CreateEnrollmentHandler> logger) 
         : IRequestHandler<CreateEnrollmentCommand, CreateEnrollmentResponse>
     {
-        public async Task<CreateEnrollmentResponse> Handle(CreateEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task<CreateEnrollmentResponse> Handle(CreateEnrollmentCommand command, CancellationToken ct)
         {
-            // 1. Fetch Related Entities
-            var lead = await db.Leads.FindAsync([command.Request.LeadId], cancellationToken) 
-                       ?? throw new BusinessException(LoggingMessages.NotFound, $"Lead with ID {command.Request.LeadId} not found", HttpStatusCode.NotFound);
-            
-            var package = await db.Packages.FindAsync([command.Request.PackageId], cancellationToken) 
-                          ?? throw new BusinessException(LoggingMessages.NotFound, $"Package with ID {command.Request.PackageId} not found", HttpStatusCode.NotFound);
+            var req = command.Request;
 
-            // 2. Map and Calculate
+            // 1. Fetch Related Entities
+            var lead = await db.Leads.FindAsync([req.LeadId], ct) 
+                       ?? throw new BusinessException(LoggingMessages.NotFound, $"Lead {req.LeadId} not found", HttpStatusCode.NotFound);
+            
+            var package = await db.Packages.FindAsync([req.PackageId], ct) 
+                          ?? throw new BusinessException(LoggingMessages.NotFound, $"Package {req.PackageId} not found", HttpStatusCode.NotFound);
+
+            // 2. Create Enrollment
             var enrollment = new Enrollment
             {
                 LeadId = lead.Id,
                 PackageId = package.Id,
-                StartDate = command.Request.StartDate,
-                EndDate = command.Request.StartDate.AddDays(package.DurationInDays),
+                StartDate = req.StartDate,
+                EndDate = req.StartDate.AddDays(package.DurationInDays),
                 PackageCostSnapshot = package.Cost,
                 PackageDurationSnapshot = package.DurationInDays,
                 CreatedAt = DateTime.UtcNow
@@ -37,18 +39,43 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
             // 3. Update Lead Status
             lead.Status = LeadStatus.Converted;
 
-            // 4. Save
-            await db.Enrollments.AddAsync(enrollment, cancellationToken);
-            await db.SaveChangesAsync(cancellationToken);
+            // 4. Create Initial Bill via Repository (Shared Logic)
+            var bill = new Bill
+            {
+                LeadId = lead.Id,
+                EnrollmentId = enrollment.Id,
+                InitialAmount = package.Cost,
+                AmountPaid = req.AmountPaid,
+                CreatedAt = DateTime.UtcNow
+            };
 
-            logger.LogInformation(
-                "{Message}: Enrollment {EnrollmentId} created for Lead {LeadId}",
-                LoggingMessages.ResourceCreated,
+            var medicineItems = req.MedicineItems?.Select(i => (i.MedicineId, i.Quantity)) 
+                                ?? Enumerable.Empty<(Guid, int)>();
+
+            await billRepository.CreateBillWithItemsAsync(bill, medicineItems, ct);
+
+            enrollment.Bill = bill;
+
+            // 5. Save Enrollment
+            await db.Enrollments.AddAsync(enrollment, ct);
+            await db.SaveChangesAsync(ct);
+
+            logger.LogInformation("{Message}: Enrollment {EnrollmentId} created with synchronized Bill via IBillRepository", 
+                LoggingMessages.ResourceCreated, enrollment.Id);
+
+            return new CreateEnrollmentResponse(
                 enrollment.Id,
-                lead.Id
+                enrollment.LeadId,
+                enrollment.PackageId,
+                enrollment.StartDate,
+                enrollment.EndDate,
+                enrollment.PackageCostSnapshot,
+                enrollment.PackageDurationSnapshot,
+                bill.AmountPaid,
+                bill.MedicineBillingAmount,
+                bill.PendingAmount,
+                enrollment.CreatedAt
             );
-
-            return enrollment.Adapt<CreateEnrollmentResponse>();
         }
     }
 }
