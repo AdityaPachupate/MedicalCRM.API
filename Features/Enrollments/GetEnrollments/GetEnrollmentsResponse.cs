@@ -8,6 +8,7 @@ namespace CRM.API.Features.Enrollments.GetEnrollments
         decimal PackageCostSnapshot,
         DateOnly StartDate,
         DateOnly EndDate,
-        DateTime CreatedAt
+        DateTime CreatedAt,
+        bool IsActive
     );
 }

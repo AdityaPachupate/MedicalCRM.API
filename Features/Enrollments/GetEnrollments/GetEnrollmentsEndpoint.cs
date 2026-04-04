@@ -14,10 +14,24 @@ namespace CRM.API.Features.Enrollments.GetEnrollments
                 CancellationToken cancellationToken,
                 [FromQuery] int pageNumber = 1,
                 [FromQuery] int pageSize = 10,
-                [FromQuery] bool isTrash = false
+                [FromQuery] bool isTrash = false,
+                [FromQuery] DateOnly? startDateFrom = null,
+                [FromQuery] DateOnly? startDateTo = null,
+                [FromQuery] DateTime? createdAtFrom = null,
+                [FromQuery] DateTime? createdAtTo = null,
+                [FromQuery] bool? isActive = null
             ) =>
             {
-                var result = await mediator.Send(new GetEnrollmentsQuery(pageNumber, pageSize, isTrash), cancellationToken);
+                var result = await mediator.Send(new GetEnrollmentsQuery(
+                    pageNumber,
+                    pageSize,
+                    isTrash,
+                    startDateFrom,
+                    startDateTo,
+                    createdAtFrom,
+                    createdAtTo,
+                    isActive
+                ), cancellationToken);
                 return Results.Ok(result);
             })
             .WithName("GetEnrollments")
