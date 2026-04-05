@@ -16,10 +16,9 @@ This guide details the application's capabilities across its core modules and th
     - `GET /api/leads/{id}`
 4.  **Maintain Accuracy**: Update patient contact info or status as it evolves.
     - `PUT /api/leads/{id}`
-5.  **Lifecycle Management (Trash System)**:
-    - **Soft Delete**: Move leads to "Trash" while preserving data.
+    - **Soft Delete (Cascading)**: Move leads to "Trash" while preserving data. This **automatically** trashes all associated Follow-ups, Enrollments, and Bills.
       - `DELETE /api/leads/{id}`
-    - **Restore**: Bring a lead back from the trash.
+    - **Restore (Cascading)**: Bring a lead and all its associated history back from the trash.
       - `POST /api/leads/{id}/restore`
     - **Permanent Delete**: Completely remove data (Admins only).
       - `DELETE /api/leads/{id}?isPermanent=true`
@@ -82,10 +81,25 @@ This guide details the application's capabilities across its core modules and th
 4.  **Adjust Schedules**: Update enrollment dates. Note: The `EndDate` automatically recalculates if you change the `StartDate` or the `Package`.
     - `PUT /api/enrollments/{id}`
 5.  **Lifecycle Management**:
-    - **Soft Delete**: Trash an enrollment.
+    - **Soft Delete**: Trash an enrollment. Note: This unlinks but preserves the associated Bill.
       - `DELETE /api/enrollments/{id}`
     - **Restore**: Recover a trashed enrollment.
       - `POST /api/enrollments/{id}/restore`
+
+---
+
+## 🧾 Bills Module
+*Financial tracking and itemized medicine billing.*
+
+### 🌟 What you can do:
+1.  **Itemized Billing**: Create bills with multiple medicine items, quantities, and automatic price snapshots.
+2.  **Unified Financial Status**: Manage `InitialAmount` (Package), `MedicineBillingAmount`, `AmountPaid`, and `PendingAmount`.
+3.  **Historical Integrity**: Soft-deleted bills and inactive medicines remain visible in detail views for audit trails.
+4.  **Flexible Cleanup**:
+    - **Soft Delete**: Move individual bills to the trash.
+      - `DELETE /api/bills/{id}`
+    - **Permanent Delete**: Hard-delete bills from the system.
+      - `DELETE /api/bills/{id}?isPermanent=true`
 
 ---
 
@@ -117,4 +131,7 @@ Input validation is handled through **FluentValidation** and integrated into the
 - **Data Integrity (Snapshots)**: Critical historical data (like Package Cost/Duration) is snapshotted during enrollment to protect past transactions from future price changes.
 
 ### 🗑️ Lifecycle & Trash System
-A consistent **Soft Delete** pattern is implemented across all modules. Global query filters ensure that trashed items are automatically hidden from normal views while remaining recoverable through a standardized restoration process.
+A consistent **Soft Delete** pattern is implemented across all modules. 
+- **Global Filters**: Trashed items are automatically hidden from normal views.
+- **Cascading Trash**: Trashing a top-level entity (like a Lead) automatically trashes all dependent records (Follow-ups, Enrollments, Bills) to ensure financial and data consistency.
+- **Audit Trails**: Historical detail views (GetById) use `.IgnoreQueryFilters()` to ensure all past data, including trashed records, remains available for accurate reporting.

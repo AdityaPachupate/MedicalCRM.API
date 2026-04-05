@@ -13,6 +13,7 @@ namespace CRM.API.Features.Leads.GetLeadsById
         {
             var lead = await db.Leads
                 .AsNoTracking()
+                .IgnoreQueryFilters()
                 .Where(l => l.Id == query.Id)
                 .Select(l => new GetLeadsByIdResponse(
                     l.Id,
@@ -44,8 +45,8 @@ namespace CRM.API.Features.Leads.GetLeadsById
                         e.CreatedAt,
                         e.Bill != null ? new BillDto(
                             e.Bill.Id,
-                            e.Bill.PackageAmount,
-                            e.Bill.AdvanceAmount,
+                            e.Bill.InitialAmount,
+                            e.Bill.AmountPaid,
                             e.Bill.PendingAmount,
                             e.Bill.MedicineBillingAmount,
                             e.Bill.CreatedAt
@@ -62,8 +63,8 @@ namespace CRM.API.Features.Leads.GetLeadsById
                         r.CreatedAt,
                         r.Bill != null ? new BillDto(
                             r.Bill.Id,
-                            r.Bill.PackageAmount,
-                            r.Bill.AdvanceAmount,
+                            r.Bill.InitialAmount,
+                            r.Bill.AmountPaid,
                             r.Bill.PendingAmount,
                             r.Bill.MedicineBillingAmount,
                             r.Bill.CreatedAt

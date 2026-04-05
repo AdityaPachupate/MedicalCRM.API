@@ -15,6 +15,7 @@ namespace CRM.API.Features.Enrollments.GetEnrollmentById
             var response = await db.Enrollments
                 .AsNoTracking()
                 .IgnoreQueryFilters() 
+                .TagWith("Historical Enrollment Search")
                 .Where(e => e.Id == query.Id)
                 .Select(e => new GetEnrollmentByIdResponse(
                     e.Id,

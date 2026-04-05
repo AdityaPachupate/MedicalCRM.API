@@ -19,5 +19,7 @@ public class BillConfiguration : IEntityTypeConfiguration<Bill>
         builder.HasOne(b => b.Lead)
             .WithMany(l => l.Bills)
             .HasForeignKey(b => b.LeadId);
+        
+        builder.HasQueryFilter(b => !b.IsDeleted);
     }
 }

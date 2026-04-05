@@ -50,6 +50,7 @@ namespace CRM.API.Infrastructure.Persistence.Repositories
         {
             return await db.Bills
                 .AsNoTracking()
+                .IgnoreQueryFilters()
                 .Include(b => b.Items)
                     .ThenInclude(i => i.Medicine)
                 .Where(b => b.LeadId == leadId)
@@ -65,7 +66,9 @@ namespace CRM.API.Infrastructure.Persistence.Repositories
 
         public async Task DetachBillFromEnrollmentAsync(Guid enrollmentId, CancellationToken ct)
         {
-            var bill = await db.Bills.FirstOrDefaultAsync(b => b.EnrollmentId == enrollmentId, ct);
+            var bill = await db.Bills
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(b => b.EnrollmentId == enrollmentId, ct);
             if (bill != null)
             {
                 bill.EnrollmentId = null; // Unlink but keep the record
@@ -85,7 +88,10 @@ namespace CRM.API.Infrastructure.Persistence.Repositories
 
         public async Task AddMedicineToBillAsync(Guid billId, IEnumerable<(Guid MedicineId, int Quantity)> items, CancellationToken ct)
         {
-            var bill = await db.Bills.Include(b => b.Items).FirstOrDefaultAsync(b => b.Id == billId, ct);
+            var bill = await db.Bills
+                .IgnoreQueryFilters()
+                .Include(b => b.Items)
+                .FirstOrDefaultAsync(b => b.Id == billId, ct);
             if (bill == null) return;
 
             var medicineIds = items.Select(i => i.MedicineId).ToList();

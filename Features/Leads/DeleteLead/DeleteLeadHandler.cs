@@ -40,8 +40,28 @@ namespace CRM.API.Features.Leads.DeleteLead
                 // Soft Delete (Move to Trash)
                 lead.IsDeleted = true;
                 lead.DeletedAt = DateTime.UtcNow;
+
+                // Cascade Soft Delete to related entities
+                await db.Bills
+                    .Where(b => b.LeadId == lead.Id && !b.IsDeleted)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(b => b.IsDeleted, true)
+                        .SetProperty(b => b.DeletedAt, DateTime.UtcNow), cancellationToken);
+
+                await db.Enrollments
+                    .Where(e => e.LeadId == lead.Id && !e.IsDeleted)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(e => e.IsDeleted, true)
+                        .SetProperty(e => e.DeletedAt, DateTime.UtcNow), cancellationToken);
+
+                await db.FollowUps
+                    .Where(f => f.LeadId == lead.Id && !f.IsDeleted)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(f => f.IsDeleted, true)
+                        .SetProperty(f => f.DeletedAt, DateTime.UtcNow), cancellationToken);
+
                 logger.LogInformation(
-                "Lead with ID {LeadId} moved to Trash",
+                "Lead with ID {LeadId} and all related records moved to Trash",
                 command.Request.Id
             );
             }
