@@ -93,11 +93,17 @@ This guide details the application's capabilities across its core modules and th
 
 ### 🌟 What you can do:
 1.  **Itemized Billing**: Create bills with multiple medicine items, quantities, and automatic price snapshots.
-2.  **Unified Financial Status**: Manage `InitialAmount` (Package), `MedicineBillingAmount`, `AmountPaid`, and `PendingAmount`.
-3.  **Historical Integrity**: Soft-deleted bills and inactive medicines remain visible in detail views for audit trails.
-4.  **Flexible Cleanup**:
+2.  **Global Financial Overview**: View a paginated list of all bills across the entire clinic, with filtering by Lead or Trash status.
+    - `GET /api/bills`
+3.  **Detailed Lead Billing**: Get the full financial history for a specific lead.
+    - `GET /api/leads/{id}/bills`
+4.  **Unified Financial Status**: Manage `InitialAmount` (Package), `MedicineBillingAmount`, `AmountPaid`, and `PendingAmount`.
+5.  **Historical Integrity**: Soft-deleted bills and inactive medicines remain visible in detail views for audit trails.
+6.  **Lifecycle Management**:
     - **Soft Delete**: Move individual bills to the trash.
       - `DELETE /api/bills/{id}`
+    - **Restore**: Recover a trashed bill.
+      - `POST /api/bills/{id}/restore`
     - **Permanent Delete**: Hard-delete bills from the system.
       - `DELETE /api/bills/{id}?isPermanent=true`
 
