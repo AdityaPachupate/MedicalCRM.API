@@ -13,6 +13,13 @@ namespace CRM.API.Common.Interfaces
         
         Task UpdateBillAsync(Bill bill, CancellationToken ct);
 
+        Task UpdateBillWithItemsAsync(
+            Guid billId, 
+            decimal? initialAmount,
+            decimal? amountPaid, 
+            IEnumerable<(Guid MedicineId, int Quantity)>? items, 
+            CancellationToken ct);
+
         /// <summary>
         /// Unlinks a Bill from an Enrollment (e.g. when enrollment is deleted)
         /// but preserves the lead/debt record.

@@ -93,7 +93,8 @@ This guide details the application's capabilities across its core modules and th
 
 ### 🌟 What you can do:
 1.  **Itemized Billing**: Create bills with multiple medicine items, quantities, and automatic price snapshots.
-2.  **Global Financial Overview**: View a paginated list of all bills across the entire clinic, with filtering by Lead or Trash status.
+    - `POST /api/bills`
+2.  **Global Financial Overview**: View a paginated list of all bills across the entire clinic. Supports filtering by `LeadId` or `IsTrash`.
     - `GET /api/bills`
 3.  **Detailed Lead Billing**: Get the full financial history for a specific lead.
     - `GET /api/leads/{id}/bills`
@@ -102,9 +103,11 @@ This guide details the application's capabilities across its core modules and th
 6.  **Lifecycle Management**:
     - **Soft Delete**: Move individual bills to the trash.
       - `DELETE /api/bills/{id}`
+    - **Update**: Adjust bill totals or itemized medicine lists.
+      - `PUT /api/bills/{id}`
     - **Restore**: Recover a trashed bill.
       - `POST /api/bills/{id}/restore`
-    - **Permanent Delete**: Hard-delete bills from the system.
+    - **Permanent Delete**: Hard-delete bills from the system (Admins only).
       - `DELETE /api/bills/{id}?isPermanent=true`
 
 ---

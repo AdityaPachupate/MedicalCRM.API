@@ -64,6 +64,57 @@ namespace CRM.API.Infrastructure.Persistence.Repositories
             await db.SaveChangesAsync(ct);
         }
 
+        public async Task UpdateBillWithItemsAsync(
+            Guid billId, 
+            decimal? initialAmount,
+            decimal? amountPaid, 
+            IEnumerable<(Guid MedicineId, int Quantity)>? items, 
+            CancellationToken ct)
+        {
+            var bill = await db.Bills
+                .IgnoreQueryFilters()
+                .Include(b => b.Items)
+                .FirstOrDefaultAsync(b => b.Id == billId, ct);
+            
+            if (bill == null) return;
+
+            if (initialAmount.HasValue) bill.InitialAmount = initialAmount.Value;
+            if (amountPaid.HasValue) bill.AmountPaid = amountPaid.Value;
+
+            if (items != null)
+            {
+                var newItemsList = items.ToList();
+                var oldItems = bill.Items.ToList();
+                
+                db.BillItems.RemoveRange(bill.Items);
+                bill.Items.Clear();
+
+                var medicineIds = newItemsList.Select(i => i.MedicineId).ToList();
+                var medicines = await db.Medicines.Where(m => medicineIds.Contains(m.Id)).ToListAsync(ct);
+
+                foreach (var itemReq in newItemsList)
+                {
+                    var med = medicines.FirstOrDefault(m => m.Id == itemReq.MedicineId);
+                    if (med != null)
+                    {
+                        var existingItem = oldItems.FirstOrDefault(oi => oi.MedicineId == itemReq.MedicineId);
+                        
+                        bill.Items.Add(new BillItem
+                        {
+                            BillId = bill.Id,
+                            MedicineId = med.Id,
+                            Quantity = itemReq.Quantity,
+                            UnitPriceSnapshot = existingItem?.UnitPriceSnapshot ?? med.Price
+                        });
+                    }
+                }
+            }
+
+            RecalculateTotals(bill);
+
+            await db.SaveChangesAsync(ct);
+        }
+
         public async Task DetachBillFromEnrollmentAsync(Guid enrollmentId, CancellationToken ct)
         {
             var bill = await db.Bills
