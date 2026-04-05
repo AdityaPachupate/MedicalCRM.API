@@ -12,8 +12,10 @@ namespace CRM.API.Common.Extensions
                 .Select(Activator.CreateInstance)
                 .Cast<IEndpoint>();
 
+            var apiGroup = app.MapGroup("/api");
+
             foreach (var endpoint in endpoints)
-                endpoint.MapEndpoint(app);
+                endpoint.MapEndpoint(apiGroup);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
             // 2. Create Enrollment
             var enrollment = new Enrollment
             {
+                Id = Guid.NewGuid(),
                 LeadId = lead.Id,
                 PackageId = package.Id,
                 StartDate = req.StartDate,
@@ -39,9 +40,13 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
             // 3. Update Lead Status
             lead.Status = LeadStatus.Converted;
 
+            // 5. Save Enrollment and Bill atomically via Graph Tracking
+            await db.Enrollments.AddAsync(enrollment, ct);
+
             // 4. Create Initial Bill via Repository (Shared Logic)
             var bill = new Bill
             {
+                Id = Guid.NewGuid(),
                 LeadId = lead.Id,
                 EnrollmentId = enrollment.Id,
                 InitialAmount = package.Cost,
@@ -55,10 +60,6 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
             await billRepository.CreateBillWithItemsAsync(bill, medicineItems, ct);
 
             enrollment.Bill = bill;
-
-            // 5. Save Enrollment
-            await db.Enrollments.AddAsync(enrollment, ct);
-            await db.SaveChangesAsync(ct);
 
             logger.LogInformation("{Message}: Enrollment {EnrollmentId} created with synchronized Bill via IBillRepository", 
                 LoggingMessages.ResourceCreated, enrollment.Id);

@@ -8,12 +8,10 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("/enrollments", async (
-                CreateEnrollmentRequest request, IMediator mediator, CancellationToken cancellationToken
-            ) =>
+            app.MapPost("/enrollments", async ([FromBody] CreateEnrollmentRequest request, IMediator mediator, CancellationToken cancellationToken) =>
             {
                 var result = await mediator.Send(new CreateEnrollmentCommand(request), cancellationToken);
-                return Results.Created($"/enrollments/{result.Id}", result);
+                return Results.Created($"/api/enrollments/{result.Id}", result);
             })
             .WithName("CreateEnrollment")
             .WithTags("Enrollments")
