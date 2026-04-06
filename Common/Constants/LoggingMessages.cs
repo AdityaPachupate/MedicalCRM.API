@@ -9,4 +9,5 @@ public static class LoggingMessages
     public const string ResourceExists = "Resource already exists";
     public const string ResourceCreated = "Resource created";
     public const string ResourceUpdated = "Resource updated";
+    public const string ValidationFailed = "Validation failed";
 }

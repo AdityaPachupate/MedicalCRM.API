@@ -1,4 +1,5 @@
 using CRM.API.Common.Interfaces;
+using CRM.API.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -14,16 +15,16 @@ namespace CRM.API.Features.Lookups.GetLookups
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("/api/lookups", async (
-                [FromQuery] string? category,
+                [AsParameters] GetLookupsQuery query,
                 IMediator mediator,
                 CancellationToken cancellationToken)
                 =>
-                Results.Ok(await mediator.Send(new GetLookupsQuery(category), cancellationToken)))
+                Results.Ok(await mediator.Send(query, cancellationToken)))
             .WithName("GetLookups")
             .WithTags("Lookups")
-            .Produces<List<GetLookupsResponse>>(StatusCodes.Status200OK)
+            .Produces<PagedResult<GetLookupsResponse>>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
-            .WithSummary("Get a list of lookup values");
+            .WithSummary("Get a paginated list of lookup values");
         }
     }
 }
