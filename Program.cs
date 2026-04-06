@@ -77,8 +77,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MigrateDatabase();
 }
+app.MigrateDatabase();
 
 app.UseCors();
 
