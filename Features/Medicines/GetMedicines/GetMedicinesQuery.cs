@@ -1,7 +1,11 @@
+using CRM.API.Common.Models;
 using MediatR;
 
 namespace CRM.API.Features.Medicines.GetMedicines
 {
-    public record GetMedicinesResponse(Guid Id, string Name, decimal Price, DateTime CreatedAt);
-    public record GetMedicinesQuery() : IRequest<List<GetMedicinesResponse>>;
+    public record GetMedicinesQuery(
+        int PageNumber = 1,
+        int PageSize = 10,
+        string? SearchTerm = null
+    ) : IRequest<PagedResult<GetMedicinesResponse>>;
 }

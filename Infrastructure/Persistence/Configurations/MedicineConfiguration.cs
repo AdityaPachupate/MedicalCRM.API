@@ -14,7 +14,7 @@ namespace CRM.API.Infrastructure.Persistence.Configurations
             builder.Property(m => m.Price).HasColumnType("decimal(18,2)");
             builder.Property(m => m.CreatedAt).HasDefaultValueSql("now()");
             
-            builder.HasQueryFilter(m => m.IsActive);
+            builder.HasQueryFilter(m => m.IsActive && !m.IsDeleted);
         }
     }
 }
