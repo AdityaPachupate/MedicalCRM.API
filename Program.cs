@@ -13,6 +13,7 @@ using Serilog;
 using Serilog.Events;
 using CRM.API.Infrastructure.Persistence.Jobs;
 using CRM.API.Infrastructure.Persistence.Repositories;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 DotNetEnv.Env.Load();
 
@@ -62,7 +63,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Host.UseSerilog();
 builder.Services.AddHostedService<TrashCleanupJob>();
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString!, name: "NeonDB");
+    .AddNpgSql(connectionString!, name: "NeonDB", tags: new[] { "ready" });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -95,7 +96,11 @@ if (app.Environment.IsProduction())
 
 app.UseAuthorization();
 
-app.MapHealthChecks("/health");
+
+app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
+app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
+app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = HealthCheckExtensions.WriteResponse });
+
 app.MapControllers();
 app.MapEndpoints(typeof(Program).Assembly);
 
