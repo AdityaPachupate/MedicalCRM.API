@@ -21,14 +21,14 @@ public class LookupValueConfiguration : IEntityTypeConfiguration<LookupValue>
         // Seed default values — app works on first run without manual setup
         // Use fixed GUIDs — Guid.NewGuid() in HasData causes spurious migration diffs
         builder.HasData(
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000001"), Category = "LeadSource", Code = "WalkIn",      DisplayName = "Walk-In",      IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000002"), Category = "LeadSource", Code = "Referral",    DisplayName = "Referral",     IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000003"), Category = "LeadSource", Code = "SocialMedia", DisplayName = "Social Media", IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000004"), Category = "LeadSource", Code = "Website",     DisplayName = "Website",      IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000005"), Category = "LeadReason", Code = "BackPain",    DisplayName = "Back Pain",    IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000006"), Category = "LeadReason", Code = "Stress",      DisplayName = "Stress",       IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000007"), Category = "LeadReason", Code = "Detox",       DisplayName = "Detox",        IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000008"), Category = "LeadReason", Code = "WeightLoss",  DisplayName = "Weight Loss",  IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000001"), Category = "LeadSource", Code = "WalkIn",      DisplayName = "Walk-In",      CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000002"), Category = "LeadSource", Code = "Referral",    DisplayName = "Referral",     CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000003"), Category = "LeadSource", Code = "SocialMedia", DisplayName = "Social Media", CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000004"), Category = "LeadSource", Code = "Website",     DisplayName = "Website",      CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000005"), Category = "LeadReason", Code = "BackPain",    DisplayName = "Back Pain",    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000006"), Category = "LeadReason", Code = "Stress",      DisplayName = "Stress",       CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000007"), Category = "LeadReason", Code = "Detox",       DisplayName = "Detox",        CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new LookupValue { Id = Guid.Parse("a1000000-0000-0000-0000-000000000008"), Category = "LeadReason", Code = "WeightLoss",  DisplayName = "Weight Loss",  CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
         );
     }
 }

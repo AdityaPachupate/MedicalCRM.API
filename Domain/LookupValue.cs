@@ -6,7 +6,8 @@ namespace CRM.API.Domain
         public string Category { get; set; } = string.Empty;    // "LeadSource" | "LeadReason"
         public string Code { get; set; } = string.Empty;         // "WalkIn" — used in API requests
         public string DisplayName { get; set; } = string.Empty;  // "Walk-In" — shown in UI
-        public bool IsActive { get; set; } = true;               // Soft delete
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

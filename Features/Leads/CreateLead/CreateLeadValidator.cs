@@ -19,8 +19,8 @@ namespace CRM.API.Features.Leads.CreateLead
                 .MustAsync(async (source, ct) =>
                     await db.LookupValues.AnyAsync(l =>
                         l.Category == LookupCategories.LeadSource &&
-                        l.Code == source && l.IsActive, ct))
-                .WithMessage(x => $"'{x.Request.Source}' is not a valid active lead source.");
+                        l.Code == source && !l.IsDeleted, ct))
+                .WithMessage(x => $"'{x.Request.Source}' is not a valid lead source.");
 
             // Validate Reason exists as an active lookup value
             RuleFor(x => x.Request.Reason)
@@ -28,8 +28,8 @@ namespace CRM.API.Features.Leads.CreateLead
                 .MustAsync(async (reason, ct) =>
                     await db.LookupValues.AnyAsync(l =>
                         l.Category == LookupCategories.LeadReason &&
-                        l.Code == reason && l.IsActive, ct))
-                .WithMessage(x => $"'{x.Request.Reason}' is not a valid active lead reason.");
+                        l.Code == reason && !l.IsDeleted, ct))
+                .WithMessage(x => $"'{x.Request.Reason}' is not a valid lead reason.");
         }
     }
 }

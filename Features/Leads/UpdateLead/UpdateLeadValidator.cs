@@ -28,8 +28,8 @@ namespace CRM.API.Features.Leads.UpdateLead
                 .MustAsync(async (source, ct) =>
                     await db.LookupValues.AnyAsync(l =>
                         l.Category == LookupCategories.LeadSource &&
-                        l.Code == source && l.IsActive, ct))
-                .WithMessage(x => $"'{x.UpdateLeadRequest.Source}' is not a valid active lead source.")
+                        l.Code == source && !l.IsDeleted, ct))
+                .WithMessage(x => $"'{x.UpdateLeadRequest.Source}' is not a valid lead source.")
                 .When(x => !string.IsNullOrEmpty(x.UpdateLeadRequest.Source));
 
             // Validate Reason exists as an active lookup value if provided
@@ -37,8 +37,8 @@ namespace CRM.API.Features.Leads.UpdateLead
                 .MustAsync(async (reason, ct) =>
                     await db.LookupValues.AnyAsync(l =>
                         l.Category == LookupCategories.LeadReason &&
-                        l.Code == reason && l.IsActive, ct))
-                .WithMessage(x => $"'{x.UpdateLeadRequest.Reason}' is not a valid active lead reason.")
+                        l.Code == reason && !l.IsDeleted, ct))
+                .WithMessage(x => $"'{x.UpdateLeadRequest.Reason}' is not a valid lead reason.")
                 .When(x => !string.IsNullOrEmpty(x.UpdateLeadRequest.Reason));
         }
     }
