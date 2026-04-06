@@ -25,7 +25,7 @@ namespace CRM.API.Features.Packages.DeletePackage
 
             if (package == null)
             {
-                logger.LogWarning("Package with ID {PackageId} not found for deletion.", command.Id);
+                logger.LogWarning("{Message}: Package with ID {PackageId} not found for deletion.", LoggingMessages.NotFound, command.Id);
                 throw new BusinessException(
                    LoggingMessages.NotFound,
                    $"Deleting Package with ID {command.Id}",

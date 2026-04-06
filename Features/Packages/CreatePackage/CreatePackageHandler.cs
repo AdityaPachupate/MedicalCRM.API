@@ -27,7 +27,7 @@ namespace CRM.API.Features.Packages.CreatePackage
 
             if (alreadyExists)
             {
-                logger.LogWarning("Package with name {PackageName} already exists.", command.Request.Name);
+                logger.LogWarning("{Message}: Package with name {PackageName} already exists.", LoggingMessages.Conflict, command.Request.Name);
                 throw new BusinessException(
                     LoggingMessages.Conflict,
                     $"Creating Package with name '{command.Request.Name}'",

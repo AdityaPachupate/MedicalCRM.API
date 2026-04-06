@@ -8,7 +8,7 @@ namespace CRM.API.Features.FollowUps.DeleteFollowUp
 {
     public class DeleteFollowUpHandler(
         AppDbContext db,
-        ILogger<DeleteFollowUpCommand> logger
+        ILogger<DeleteFollowUpHandler> logger
     ) : IRequestHandler<DeleteFollowUpCommand, DeleteFollowUpResponse>
     {
         public async Task<DeleteFollowUpResponse> Handle(DeleteFollowUpCommand command, CancellationToken cancellationToken)
@@ -19,6 +19,7 @@ namespace CRM.API.Features.FollowUps.DeleteFollowUp
 
             if (followUp == null)
             {
+                logger.LogWarning("{Message}: Deleting FollowUp {FollowUpId} not found", LoggingMessages.NotFound, command.Request.Id);
                 throw new BusinessException(
                    LoggingMessages.NotFound,
                    $"FollowUp with ID {command.Request.Id} not found",

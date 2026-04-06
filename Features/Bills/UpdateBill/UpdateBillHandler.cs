@@ -1,9 +1,11 @@
 using CRM.API.Common.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using CRM.API.Common.Constants;
 
 namespace CRM.API.Features.Bills.UpdateBill;
 
-public class UpdateBillHandler(IBillRepository billRepository) : IRequestHandler<UpdateBillCommand, UpdateBillResponse>
+public class UpdateBillHandler(IBillRepository billRepository, ILogger<UpdateBillHandler> logger) : IRequestHandler<UpdateBillCommand, UpdateBillResponse>
 {
     public async Task<UpdateBillResponse> Handle(UpdateBillCommand command, CancellationToken ct)
     {
@@ -17,6 +19,7 @@ public class UpdateBillHandler(IBillRepository billRepository) : IRequestHandler
             ct
         );
 
+        logger.LogInformation("{Message}: Bill {BillId} updated", LoggingMessages.ResourceUpdated, command.Id);
         return new UpdateBillResponse(true);
     }
 }

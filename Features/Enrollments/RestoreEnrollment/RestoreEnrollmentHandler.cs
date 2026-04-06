@@ -19,6 +19,7 @@ namespace CRM.API.Features.Enrollments.RestoreEnrollment
 
             if (enrollment == null)
             {
+                logger.LogWarning("{Message}: Restoring enrollment with ID {EnrollmentId} not found", LoggingMessages.NotFound, command.Request.Id);
                 throw new BusinessException(
                    LoggingMessages.NotFound,
                    $"Restoring enrollment with ID {command.Request.Id}",

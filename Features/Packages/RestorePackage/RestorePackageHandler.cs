@@ -24,7 +24,7 @@ namespace CRM.API.Features.Packages.RestorePackage
 
             if (package == null)
             {
-                logger.LogWarning("Package with ID {PackageId} not found for restoration.", command.Id);
+                logger.LogWarning("{Message}: Package with ID {PackageId} not found for restoration.", LoggingMessages.NotFound, command.Id);
                 throw new BusinessException(
                    LoggingMessages.NotFound,
                    $"Restoring Package with ID {command.Id}",

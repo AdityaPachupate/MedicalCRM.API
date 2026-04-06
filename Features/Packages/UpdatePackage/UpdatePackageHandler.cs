@@ -24,7 +24,7 @@ namespace CRM.API.Features.Packages.UpdatePackage
 
             if (package == null)
             {
-                logger.LogWarning("Package with ID {PackageId} not found.", command.Id);
+                logger.LogWarning("{Message}: Package with ID {PackageId} not found.", LoggingMessages.NotFound, command.Id);
                 throw new BusinessException(
                     LoggingMessages.NotFound,
                     $"Updating Package with ID {command.Id}",
@@ -40,7 +40,7 @@ namespace CRM.API.Features.Packages.UpdatePackage
 
                 if (nameExists)
                 {
-                    logger.LogWarning("Package with name {PackageName} already exists.", command.Request.Name);
+                    logger.LogWarning("{Message}: Package with name {PackageName} already exists.", LoggingMessages.Conflict, command.Request.Name);
                     throw new BusinessException(
                         LoggingMessages.Conflict,
                         $"Updating Package Name to '{command.Request.Name}'",

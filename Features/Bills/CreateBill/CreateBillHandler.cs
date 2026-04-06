@@ -5,11 +5,12 @@ using CRM.API.Domain;
 using CRM.API.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace CRM.API.Features.Bills.CreateBill
 {
-    public class CreateBillHandler(AppDbContext db, IBillRepository billRepository) 
+    public class CreateBillHandler(AppDbContext db, IBillRepository billRepository, ILogger<CreateBillHandler> logger) 
         : IRequestHandler<CreateBillCommand, CreateBillResponse>
     {
         public async Task<CreateBillResponse> Handle(CreateBillCommand command, CancellationToken ct)
@@ -20,6 +21,7 @@ namespace CRM.API.Features.Bills.CreateBill
             var leadExists = await db.Leads.AnyAsync(l => l.Id == req.LeadId, ct);
             if (!leadExists)
             {
+                logger.LogWarning("{Message}: Creating Bill failed - Lead {LeadId} not found", LoggingMessages.NotFound, req.LeadId);
                 throw new BusinessException(LoggingMessages.NotFound, $"Lead {req.LeadId} not found", HttpStatusCode.NotFound);
             }
 
@@ -39,6 +41,7 @@ namespace CRM.API.Features.Bills.CreateBill
             };
 
             await billRepository.CreateBillWithItemsAsync(bill, medicineItems, ct);
+            logger.LogInformation("{Message}: Bill {BillId} created for Lead {LeadId}", LoggingMessages.ResourceCreated, bill.Id, req.LeadId);
 
             return new CreateBillResponse(
                 bill.Id,

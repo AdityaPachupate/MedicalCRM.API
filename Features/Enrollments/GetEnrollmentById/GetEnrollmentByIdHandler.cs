@@ -3,11 +3,12 @@ using CRM.API.Common.ExceptionHandling;
 using CRM.API.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace CRM.API.Features.Enrollments.GetEnrollmentById
 {
-    public class GetEnrollmentByIdHandler(AppDbContext db) : IRequestHandler<GetEnrollmentByIdQuery, GetEnrollmentByIdResponse>
+    public class GetEnrollmentByIdHandler(AppDbContext db, ILogger<GetEnrollmentByIdHandler> logger) : IRequestHandler<GetEnrollmentByIdQuery, GetEnrollmentByIdResponse>
     {
         public async Task<GetEnrollmentByIdResponse> Handle(GetEnrollmentByIdQuery query, CancellationToken cancellationToken)
         {
@@ -41,6 +42,7 @@ namespace CRM.API.Features.Enrollments.GetEnrollmentById
 
             if (response == null)
             {
+                logger.LogWarning("{Message}: Fetching enrollment {EnrollmentId} not found", LoggingMessages.NotFound, query.Id);
                 throw new BusinessException(
                     LoggingMessages.NotFound,
                     $"Fetching enrollment {query.Id}",

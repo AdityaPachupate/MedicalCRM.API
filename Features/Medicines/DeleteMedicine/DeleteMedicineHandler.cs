@@ -23,6 +23,7 @@ namespace CRM.API.Features.Medicines.DeleteMedicine
 
             if (medicine == null)
             {
+                logger.LogWarning("{Message}: Deleting Medicine with ID {MedicineId} not found", LoggingMessages.NotFound, command.Id);
                 throw new BusinessException(
                     LoggingMessages.NotFound,
                     $"Medicine with ID {command.Id} not found.",

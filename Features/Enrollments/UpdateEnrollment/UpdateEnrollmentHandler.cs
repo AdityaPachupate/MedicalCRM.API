@@ -27,6 +27,7 @@ namespace CRM.API.Features.Enrollments.UpdateEnrollment
 
             if (enrollment == null)
             {
+                logger.LogWarning("{Message}: Updating enrollment {EnrollmentId} not found", LoggingMessages.NotFound, request.Id);
                 throw new BusinessException(LoggingMessages.NotFound, $"Enrollment {request.Id} not found", HttpStatusCode.NotFound);
             }
 
@@ -42,6 +43,7 @@ namespace CRM.API.Features.Enrollments.UpdateEnrollment
                 var newPackage = await db.Packages.FirstOrDefaultAsync(p => p.Id == request.PackageId.Value, ct);
                 if (newPackage == null)
                 {
+                    logger.LogWarning("{Message}: Package {PackageId} not found for Enrollment update", LoggingMessages.NotFound, request.PackageId.Value);
                     throw new BusinessException(LoggingMessages.NotFound, $"Package {request.PackageId.Value} not found", HttpStatusCode.NotFound);
                 }
 

@@ -21,6 +21,7 @@ public class CreateFollowUpHandler(AppDbContext db, ILogger<CreateFollowUpHandle
             
         if (lead == null)
         {
+            logger.LogWarning("{Message}: Creating FollowUp failed - Lead {LeadId} not found", LoggingMessages.NotFound, command.Request.LeadId);
             throw new BusinessException(LoggingMessages.NotFound, $"Lead with ID {command.Request.LeadId} not found", HttpStatusCode.NotFound);
         }
 
@@ -32,6 +33,7 @@ public class CreateFollowUpHandler(AppDbContext db, ILogger<CreateFollowUpHandle
 
         if (duplicateExists)
         {
+            logger.LogWarning("{Message}: Creating FollowUp failed - Pending follow-up already exists for Lead {LeadId} on {Date}", LoggingMessages.Conflict, command.Request.LeadId, command.Request.FollowUpDate);
             throw new BusinessException("A pending follow-up already exists for this lead on this date.", "Creating FollowUp");
         }
 

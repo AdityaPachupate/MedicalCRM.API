@@ -8,7 +8,7 @@ namespace CRM.API.Features.FollowUps.RestoreFollowUp
 {
     public class RestoreFollowUpHandler(
         AppDbContext db,
-        ILogger<RestoreFollowUpCommand> logger
+        ILogger<RestoreFollowUpHandler> logger
     ) :
     IRequestHandler<RestoreFollowUpCommand, RestoreFollowUpResponse>
     {
@@ -20,6 +20,7 @@ namespace CRM.API.Features.FollowUps.RestoreFollowUp
 
             if (followUp == null)
             {
+                logger.LogWarning("{Message}: Restoring FollowUp {FollowUpId} not found", LoggingMessages.NotFound, command.Request.Id);
                 throw new BusinessException(
                    LoggingMessages.NotFound,
                    $"FollowUp with ID {command.Request.Id} not found",

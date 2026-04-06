@@ -21,6 +21,7 @@ namespace CRM.API.Features.Enrollments.DeleteEnrollment
 
             if (enrollment == null)
             {
+                logger.LogWarning("{Message}: Deleting enrollment {EnrollmentId} not found", LoggingMessages.NotFound, command.Request.Id);
                 throw new BusinessException(LoggingMessages.NotFound, $"Enrollment {command.Request.Id} not found", System.Net.HttpStatusCode.NotFound);
             }
 

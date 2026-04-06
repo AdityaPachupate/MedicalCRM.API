@@ -29,7 +29,7 @@ namespace CRM.API.Features.Packages.GetPackage
 
             if (package == null)
             {
-                logger.LogWarning("Package with ID {PackageId} not found.", query.Id);
+                logger.LogWarning("{Message}: Package with ID {PackageId} not found.", LoggingMessages.NotFound, query.Id);
                 throw new BusinessException(
                     LoggingMessages.NotFound,
                     $"Retrieving Package with ID {query.Id}",

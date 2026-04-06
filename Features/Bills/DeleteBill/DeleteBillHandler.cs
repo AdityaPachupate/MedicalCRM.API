@@ -19,6 +19,7 @@ namespace CRM.API.Features.Bills.DeleteBill
 
             if (bill == null)
             {
+                logger.LogWarning("{Message}: Deleting Bill with ID {BillId} not found", LoggingMessages.NotFound, command.Request.Id);
                 throw new BusinessException(
                   LoggingMessages.NotFound,
                   $"Deleting Bill with ID {command.Request.Id}",

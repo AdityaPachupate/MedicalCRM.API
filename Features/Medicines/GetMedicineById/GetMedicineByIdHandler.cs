@@ -4,12 +4,13 @@ using CRM.API.Infrastructure.Persistence;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CRM.API.Features.Medicines.GetMedicineById
 {
-    public class GetMedicineByIdHandler(AppDbContext db) : IRequestHandler<GetMedicineByIdQuery, GetMedicineByIdResponse>
+    public class GetMedicineByIdHandler(AppDbContext db, ILogger<GetMedicineByIdHandler> logger) : IRequestHandler<GetMedicineByIdQuery, GetMedicineByIdResponse>
     {
         public async Task<GetMedicineByIdResponse> Handle(GetMedicineByIdQuery query, CancellationToken ct)
         {
@@ -19,6 +20,7 @@ namespace CRM.API.Features.Medicines.GetMedicineById
 
             if (medicine == null)
             {
+                logger.LogWarning("{Message}: Fetching Medicine with ID {MedicineId} not found", LoggingMessages.NotFound, query.Id);
                 throw new BusinessException(
                     LoggingMessages.NotFound,
                     $"Medicine with ID {query.Id} not found.",

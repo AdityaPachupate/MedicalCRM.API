@@ -18,11 +18,19 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
             var req = command.Request;
 
             // 1. Fetch Related Entities
-            var lead = await db.Leads.FindAsync([req.LeadId], ct) 
-                       ?? throw new BusinessException(LoggingMessages.NotFound, $"Lead {req.LeadId} not found", HttpStatusCode.NotFound);
+            var lead = await db.Leads.FindAsync([req.LeadId], ct);
+            if (lead == null)
+            {
+                logger.LogWarning("{Message}: Create Enrollment failed - Lead {LeadId} not found", LoggingMessages.NotFound, req.LeadId);
+                throw new BusinessException(LoggingMessages.NotFound, $"Lead {req.LeadId} not found", HttpStatusCode.NotFound);
+            }
             
-            var package = await db.Packages.FindAsync([req.PackageId], ct) 
-                          ?? throw new BusinessException(LoggingMessages.NotFound, $"Package {req.PackageId} not found", HttpStatusCode.NotFound);
+            var package = await db.Packages.FindAsync([req.PackageId], ct);
+            if (package == null)
+            {
+                logger.LogWarning("{Message}: Create Enrollment failed - Package {PackageId} not found", LoggingMessages.NotFound, req.PackageId);
+                throw new BusinessException(LoggingMessages.NotFound, $"Package {req.PackageId} not found", HttpStatusCode.NotFound);
+            }
 
             // 2. Create Enrollment
             var enrollment = new Enrollment

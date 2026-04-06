@@ -16,7 +16,10 @@ public class RestoreBillHandler(AppDbContext db, ILogger<RestoreBillHandler> log
             .FirstOrDefaultAsync(b => b.Id == command.Request.Id, cancellationToken);
 
         if (bill == null)
+        {
+            logger.LogWarning("{Message}: Restoring Bill with ID {BillId} not found", LoggingMessages.NotFound, command.Request.Id);
             throw new BusinessException(LoggingMessages.NotFound, $"Restoring Bill with ID {command.Request.Id}");
+        }
 
         bill.IsDeleted = false;
         bill.DeletedAt = null;
