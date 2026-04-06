@@ -61,6 +61,8 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Host.UseSerilog();
 builder.Services.AddHostedService<TrashCleanupJob>();
+builder.Services.AddHealthChecks()
+    .AddNpgSql(connectionString!, name: "NeonDB");
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -93,6 +95,7 @@ if (app.Environment.IsProduction())
 
 app.UseAuthorization();
 
+app.MapHealthChecks("/health");
 app.MapControllers();
 app.MapEndpoints(typeof(Program).Assembly);
 
