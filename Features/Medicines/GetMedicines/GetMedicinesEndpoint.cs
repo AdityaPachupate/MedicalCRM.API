@@ -11,7 +11,7 @@ namespace CRM.API.Features.Medicines.GetMedicines
         {
             app.MapGet("/api/medicines", async (
                 [Microsoft.AspNetCore.Http.AsParameters] GetMedicinesQuery query,
-                IMediator mediator, 
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var result = await mediator.Send(query, ct);

@@ -127,14 +127,9 @@ namespace CRM.API.Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task ReattachBillToEnrollmentAsync(Guid enrollmentId, CancellationToken ct)
+        public Task ReattachBillToEnrollmentAsync(Guid enrollmentId, CancellationToken ct)
         {
-            // This assumes we can find the bill by LeadId and the fact it HAS NO EnrollmentId 
-            // but matches the enrollment's history. For simplicity, we find bills 
-            // created recently for this lead without an enrollment.
-            // In a real system, we might store a 'LegacyEnrollmentId' if needed.
-            // Here, we look for the last 'detached' bill for this enrollment.
-            // Actually, better to just look for the bill that belongs to this specific lead!
+            return Task.CompletedTask;
         }
 
         public async Task AddMedicineToBillAsync(Guid billId, IEnumerable<(Guid MedicineId, int Quantity)> items, CancellationToken ct)

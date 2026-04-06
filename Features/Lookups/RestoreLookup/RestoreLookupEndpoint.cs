@@ -15,7 +15,7 @@ namespace CRM.API.Features.Lookups.RestoreLookup
         {
             app.MapPost("/api/lookups/{id:guid}/restore", async (
                 Guid id,
-                IMediator mediator, 
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var result = await mediator.Send(new RestoreLookupCommand(id), ct);

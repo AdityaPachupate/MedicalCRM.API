@@ -21,7 +21,7 @@ namespace CRM.API.Features.Enrollments.UpdateEnrollment
 
             var enrollment = await db.Enrollments
                     .Include(e => e.Package)
-                    .Include(e => e.Bill)
+                    .Include(e => e.Bill!)
                         .ThenInclude(b => b.Items)
                     .FirstOrDefaultAsync(e => e.Id == request.Id, ct);
 

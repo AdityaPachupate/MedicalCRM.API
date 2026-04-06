@@ -16,7 +16,7 @@ namespace CRM.API.Features.Medicines.DeleteMedicine
             app.MapDelete("/api/medicines/{id:guid}", async (
                 Guid id,
                 [FromQuery] bool? isPermanent,
-                IMediator mediator, 
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var result = await mediator.Send(new DeleteMedicineCommand(id, isPermanent ?? false), ct);

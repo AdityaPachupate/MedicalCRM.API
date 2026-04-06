@@ -14,19 +14,21 @@ public class GetTodayFollowUpsHandler(AppDbContext db)
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
-        var config = new TypeAdapterConfig();
-        config.NewConfig<FollowUp, GetTodayFollowUpsResponse>()
-            .Map(dest => dest.IsOverdue, src => src.FollowUpDate < today);
-
-        var followUps = await db.FollowUps
+        // Fetch pending follow-ups for today or earlier
+        var followUpsData = await db.FollowUps
+            .Include(f => f.Lead)
             .AsNoTracking()
             .Where(f => f.Status == FollowUpStatus.Pending && f.FollowUpDate <= today)
-            .ProjectToType<GetTodayFollowUpsResponse>(config)
+            .ToListAsync(cancellationToken);
+
+        // Project and sort in-memory
+        var response = followUpsData
+            .Select(f => f.Adapt<GetTodayFollowUpsResponse>() with { IsOverdue = f.FollowUpDate < today })
             .OrderByDescending(f => f.IsOverdue)
             .ThenByDescending(f => f.Priority)
             .ThenBy(f => f.FollowUpDate)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
-        return followUps;
+        return response;
     }
 }

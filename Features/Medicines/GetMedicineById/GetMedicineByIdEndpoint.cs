@@ -15,7 +15,7 @@ namespace CRM.API.Features.Medicines.GetMedicineById
         {
             app.MapGet("/api/medicines/{id:guid}", async (
                 Guid id,
-                IMediator mediator, 
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var result = await mediator.Send(new GetMedicineByIdQuery(id), ct);

@@ -34,6 +34,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("NeonProductionDb")
                       ?? Environment.GetEnvironmentVariable("ConnectionStrings__NeonProductionDb");
@@ -69,6 +79,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.MigrateDatabase();
 }
+
+app.UseCors();
 
 app.UseSerilogRequestLogging();
 app.UseMiddleware<CorrelationIdMiddleware>();
