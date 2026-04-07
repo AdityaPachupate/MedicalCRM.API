@@ -13,7 +13,6 @@ namespace CRM.API.Features.Leads.GetLeadsById
         {
             var lead = await db.Leads
                 .AsNoTracking()
-                .IgnoreQueryFilters()
                 .Where(l => l.Id == query.Id)
                 .Select(l => new GetLeadsByIdResponse(
                     l.Id,
