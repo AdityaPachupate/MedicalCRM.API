@@ -10,7 +10,7 @@ namespace CRM.API.Features.Medicines.CreateMedicine
             app.MapPost("/medicines", async (CreateMedicineRequest request, IMediator mediator, CancellationToken ct) =>
             {
                 var result = await mediator.Send(new CreateMedicineCommand(request), ct);
-                return Results.Created($"/medicines/{result.Id}", result);
+                return Results.Created($"/api/medicines/{result.Id}", result);
             })
             .WithName("CreateMedicine")
             .WithTags("Medicines")

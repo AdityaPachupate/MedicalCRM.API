@@ -10,7 +10,7 @@ public class GetEnrollmentsHandler(AppDbContext db) : IRequestHandler<GetEnrollm
 {
     public async Task<PagedResult<GetEnrollmentsResponse>> Handle(GetEnrollmentsQuery query, CancellationToken cancellationToken)
     {
-        var today = DateOnly.FromDateTime(DateTime.Today);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
 
         var queryable = (query.IsTrash
             ? db.Enrollments.IgnoreQueryFilters().Where(e => e.IsDeleted)

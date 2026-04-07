@@ -11,7 +11,7 @@ public class CreateFollowUpValidator : AbstractValidator<CreateFollowUpRequest>
 
         RuleFor(x => x.FollowUpDate)
             .NotEmpty().WithMessage("Follow-up date is required.")
-            .Must(date => date >= DateOnly.FromDateTime(DateTime.Today))
+            .Must(date => date >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
             .WithMessage("Follow-up date cannot be in the past.");
 
         RuleFor(x => x.Source)

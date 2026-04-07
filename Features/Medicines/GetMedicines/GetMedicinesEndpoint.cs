@@ -9,7 +9,7 @@ namespace CRM.API.Features.Medicines.GetMedicines
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/medicines", async (
+            app.MapGet("/medicines", async (
                 [Microsoft.AspNetCore.Http.AsParameters] GetMedicinesQuery query,
                 IMediator mediator,
                 CancellationToken ct) =>

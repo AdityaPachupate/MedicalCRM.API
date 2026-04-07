@@ -15,9 +15,9 @@ namespace CRM.API.Features.Packages.DeletePackage
         {
             app.MapDelete("/packages/{id:guid}", async (
                 Guid id,
-                [FromQuery] bool isPermanent,
                 IMediator mediator,
-                CancellationToken cancellationToken)
+                CancellationToken cancellationToken,
+                [FromQuery] bool isPermanent = false)
                 =>
                 Results.Ok(await mediator.Send(new DeletePackageCommand(id, isPermanent), cancellationToken)))
             .WithName("DeletePackage")

@@ -65,9 +65,8 @@ namespace CRM.API.Features.Enrollments.CreateEnrollment
             var medicineItems = req.MedicineItems?.Select(i => (i.MedicineId, i.Quantity)) 
                                 ?? Enumerable.Empty<(Guid, int)>();
 
-            await billRepository.CreateBillWithItemsAsync(bill, medicineItems, ct);
-
             enrollment.Bill = bill;
+            await billRepository.CreateBillWithItemsAsync(bill, medicineItems, ct);
 
             logger.LogInformation("{Message}: Enrollment {EnrollmentId} created with synchronized Bill via IBillRepository", 
                 LoggingMessages.ResourceCreated, enrollment.Id);

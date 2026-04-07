@@ -17,10 +17,13 @@ namespace CRM.API.Features.Packages.CreatePackage
                 IMediator mediator,
                 CancellationToken cancellationToken)
                 =>
-                Results.Ok(await mediator.Send(new CreatePackageCommand(request), cancellationToken)))
+            {
+                var result = await mediator.Send(new CreatePackageCommand(request), cancellationToken);
+                return Results.Created($"/api/packages/{result.Id}", result);
+            })
             .WithName("CreatePackage")
             .WithTags("Packages")
-            .Produces<CreatePackageResponse>(StatusCodes.Status200OK)
+            .Produces<CreatePackageResponse>(StatusCodes.Status201Created)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status409Conflict)
             .WithSummary("Create a new package");

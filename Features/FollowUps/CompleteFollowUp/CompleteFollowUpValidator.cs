@@ -17,7 +17,7 @@ public class CompleteFollowUpValidator : AbstractValidator<CompleteFollowUpReque
             .MaximumLength(1000).WithMessage("Notes cannot exceed 1000 characters.");
 
         RuleFor(x => x.NextFollowUpDate)
-            .Must(date => !date.HasValue || date.Value >= DateOnly.FromDateTime(DateTime.Today))
+            .Must(date => !date.HasValue || date.Value >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
             .WithMessage("Next follow-up date cannot be in the past.");
 
         RuleFor(x => x.NewLeadStatus)

@@ -12,7 +12,7 @@ public class GetTodayFollowUpsHandler(AppDbContext db)
 {
     public async Task<List<GetTodayFollowUpsResponse>> Handle(GetTodayFollowUpsQuery query, CancellationToken cancellationToken)
     {
-        var today = DateOnly.FromDateTime(DateTime.Today);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
 
         // Fetch pending follow-ups for today or earlier
         var followUpsData = await db.FollowUps
