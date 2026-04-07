@@ -13,7 +13,7 @@ This guide details the application's capabilities across its core modules and th
 2.  **Browse & Search**: View active leads with paging and filtering. Includes **Calculated Flags** (`HasEnrollment`, `HasMedicine`) for instant status context.
     - `GET /api/leads`
 3.  **Deep Dive History**: View a lead's full timeline including follow-ups, enrollments, and **Billing History**.
-    - `GET /api/leads/{id}`
+    - `GET /api/leads/{id}` (Note: Soft-deleted leads are filtered out by default)
 4.  **Maintain Accuracy**: Update patient contact info or status as it evolves.
     - `PUT /api/leads/{id}`
     - **Soft Delete (Cascading)**: Move leads to "Trash" while preserving data. This **automatically** trashes all associated Follow-ups, Enrollments, and Bills.
@@ -30,7 +30,7 @@ This guide details the application's capabilities across its core modules and th
 
 ### 🌟 What you can do:
 1.  **Schedule Next Contact**: Assign a follow-up task with a specific priority and communication source (WhatsApp, Call, etc.).
-    - `POST /api/followups`
+    - `POST /api/followups` (Validation: Follow-up date cannot be in the past)
 2.  **Daily Action Dashboard**: Instantly see what needs attention today. Includes automatic calculation of **Overdue** tasks.
     - `GET /api/followups/today`
 3.  **Record Outcomes**: Complete a task and document the result (e.g., Busy, Interested).
@@ -112,35 +112,87 @@ This guide details the application's capabilities across its core modules and th
 
 ---
 
+## 💊 Medicines Module
+*Pharmacy inventory and pricing management.*
+
+### 🌟 What you can do:
+1.  **Inventory Control**: Define available medicines and their current unit prices.
+    - `POST /api/medicines`
+2.  **Pharmacy List**: View all active medicines in stock.
+    - `GET /api/medicines`
+3.  **Audit Logs**: View history and details for a specific medicine.
+    - `GET /api/medicines/{id}`
+4.  **Price Updates**: Change pricing or stock status. Note: Historical bills use **price snapshots** and are NOT affected by current price changes.
+    - `PUT /api/medicines/{id}`
+5.  **Lifecycle**: Deactivate medicines through soft-delete.
+    - `DELETE /api/medicines/{id}`
+
+---
+
+## 🔄 Rejoin Module
+*Managing returning patients and recurring service revenue.*
+
+### 🌟 What you can do:
+1.  **Renew Service**: Rejoin a former patient into a new package subscription.
+    - `POST /api/rejoins`
+2.  **Retention Dashboard**: View all rejoining records and their financial impact.
+    - `GET /api/rejoins`
+3.  **Detailed History**: Review a specific rejoin event and its associated bills.
+    - `GET /api/rejoins/{id}`
+4.  **Adjust Schedules**: Update rejoin start dates.
+    - `PUT /api/rejoins/{id}`
+5.  **Lifecycle**: Soft-delete, Restore, and Hard-delete rejoin records.
+    - `DELETE /api/rejoins/{id}`
+    - `POST /api/rejoins/{id}/restore`
+
+---
+
+## 🛠️ Lookups Module
+*System-wide configuration and category management.*
+
+### 🌟 What you can do:
+1.  **Register Constants**: Add new lookup values (Sources, Reasons, Follow-up Statuses).
+    - `POST /api/lookups`
+2.  **Global Reference**: View lists by Category (e.g., `LeadSource`, `LeadStatus`).
+    - `GET /api/lookups`
+3.  **Config Updates**: Rename or modify existing codes and values.
+    - `PUT /api/lookups/{id}`
+4.  **Lifecycle**: Soft-delete and Restore system configurations.
+    - `DELETE /api/lookups/{id}`
+    - `POST /api/lookups/{id}/restore`
+
+---
+
 ## 🚀 Technical Standards & Architecture
 
-This project is built using modern, industry-standard patterns to ensure scalability, maintainability, and high performance.
+### 🛤️ Global Routing Standard
+All API endpoints are prefixed with `/api/`. 
+- **Routes**: Do not include `/api` in your feature route string; the global group prefix handles this.
+- **Health Checks**: 
+    - Full: `/api/health`
+    - Liveness: `/api/health/live`
+    - Readiness: `/api/health/ready`
 
 ### 🏗️ Vertical Slice Architecture
-Unlike traditional N-Tier architectures, we organize code by **Features** (`Features/Leads/CreateLead`). This encapsulates all requirements for a single functionality (Request, Response, Handler, Validator) in one place, reducing coupling and making the system easier to evolve.
+Code is organized by **Features** (`Features/Leads/CreateLead`). All requirements for a single functionality (Request, Response, Handler, Validator) are encapsulated in one place.
 
-### ⚡ CQRS with MediatR
-We use the **Command Query Responsibility Segregation (CQRS)** pattern via MediatR.
-- **Commands**: Handle all data modifications (Create, Update, Delete).
-- **Queries**: Handle all data retrievals (GetById, List).
-This separation allows us to optimize read and write paths independently.
-
-### 🏛️ Repository Pattern & Centralized Logic
-We use the **Repository Pattern** (`IBillRepository`) to centralize complex business logic, such as:
-- **Medicine Item Processing**: Fetching current prices and creating snapshots.
-- **Financial Recalculation**: A unified `RecalculateTotals` method ensures that `PendingAmount` is calculated identically across all modules, preventing data corruption.
-- **Dependency Inversion**: Handlers depend on interfaces, making the core business logic database-agnostic and highly testable.
+### ⚡ CQRS & MediatR
+- **Commands**: Modifications (Create, Update, Delete).
+- **Queries**: Retrievals (GetById, List).
 
 ### 🛡️ Pipeline Behaviors & Validation
-Input validation is handled through **FluentValidation** and integrated into the MediatR pipeline using **Behaviors**. This ensures that validation logic is decoupled from business logic and runs automatically before any handler is executed.
+Input validation uses **FluentValidation**. 
+- **Pattern**: Validators must inherit from `AbstractValidator<TCommand>` (not `TRequest`) to be picked up by the MediatR `ValidationBehavior` pipeline.
+- **Error Responses**: 
+    - **400 Bad Request**: Used for structural validation errors and malformed JSON.
+    - **409 Conflict**: Used for business rule violations like uniqueness constraints (handled via `BusinessException`).
 
-### 🧐 Observability & Performance
-- **Correlation IDs**: Every request is assigned a unique ID via custom middleware, which is logged with **Serilog** for end-to-end traceability in production.
-- **Manual Projection**: High-density queries use Mapster's `.ProjectToType<T>()` or manual `.Select()` with `AsNoTracking()` to minimize memory overhead and database latency.
-- **Data Integrity (Snapshots)**: Critical historical data (like Package Cost/Duration) is snapshotted during enrollment to protect past transactions from future price changes.
+### 🧐 Exception Handling
+A centralized `GlobalExceptionHandler` ensures consistent responses:
+- **ValidationException** & **BadHttpRequestException** $\rightarrow$ `400 Bad Request`
+- **BusinessException** $\rightarrow$ Customizable (usually `409 Conflict` or `404 Not Found`)
+- **Unhandled Exceptions** $\rightarrow$ `500 Internal Server Error`
 
 ### 🗑️ Lifecycle & Trash System
-A consistent **Soft Delete** pattern is implemented across all modules. 
-- **Global Filters**: Trashed items are automatically hidden from normal views.
-- **Cascading Trash**: Trashing a top-level entity (like a Lead) automatically trashes all dependent records (Follow-ups, Enrollments, Bills) to ensure financial and data consistency.
-- **Audit Trails**: Historical detail views (GetById) use `.IgnoreQueryFilters()` to ensure all past data, including trashed records, remains available for accurate reporting.
+- **Cascading Trash**: Trashing a top-level entity (like a Lead) automatically trashes all dependent records (Follow-ups, Enrollments, Bills).
+- **Soft Delete Filtering**: Normal views and `GetById` endpoints respect soft-delete status unless explicitly asked for trash views.
