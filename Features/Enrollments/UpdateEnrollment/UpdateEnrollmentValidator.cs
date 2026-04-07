@@ -6,19 +6,19 @@ using FluentValidation;
 
 namespace CRM.API.Features.Enrollments.UpdateEnrollment
 {
-    public class UpdateEnrollmentValidator : AbstractValidator<UpdateEnrollmentRequest>
+    public class UpdateEnrollmentValidator : AbstractValidator<UpdateEnrollmentCommand>
     {
         public UpdateEnrollmentValidator()
         {
-            RuleFor(x => x.Id).NotEmpty();
+            RuleFor(x => x.Request.Id).NotEmpty();
             
-            RuleFor(x => x.PackageCostSnapshot)
+            RuleFor(x => x.Request.PackageCostSnapshot)
                 .GreaterThanOrEqualTo(0)
-                .When(x => x.PackageCostSnapshot.HasValue);
+                .When(x => x.Request.PackageCostSnapshot.HasValue);
 
-            RuleFor(x => x.PackageDurationSnapshot)
+            RuleFor(x => x.Request.PackageDurationSnapshot)
                 .GreaterThan(0)
-                .When(x => x.PackageDurationSnapshot.HasValue);
+                .When(x => x.Request.PackageDurationSnapshot.HasValue);
         }
     }
 }

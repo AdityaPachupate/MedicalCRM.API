@@ -34,7 +34,7 @@ public class CreateFollowUpHandler(AppDbContext db, ILogger<CreateFollowUpHandle
         if (duplicateExists)
         {
             logger.LogWarning("{Message}: Creating FollowUp failed - Pending follow-up already exists for Lead {LeadId} on {Date}", LoggingMessages.Conflict, command.Request.LeadId, command.Request.FollowUpDate);
-            throw new BusinessException("A pending follow-up already exists for this lead on this date.", "Creating FollowUp");
+            throw new BusinessException(LoggingMessages.Conflict, "Creating FollowUp", HttpStatusCode.Conflict);
         }
 
         // 3. Map request to domain entity

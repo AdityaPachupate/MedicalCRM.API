@@ -6,6 +6,7 @@ using CRM.API.Infrastructure.Persistence;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace CRM.API.Features.Leads.CreateLead
 {
@@ -17,7 +18,7 @@ namespace CRM.API.Features.Leads.CreateLead
             if (alreadyExists)
             {
                 logger.LogInformation("{Message}: {Phone}", LoggingMessages.ResourceExists, command.Request.Phone);
-                throw new BusinessException(LoggingMessages.ResourceExists, "Adding New Lead");
+                throw new BusinessException(LoggingMessages.ResourceExists, "Adding New Lead", HttpStatusCode.Conflict);
             }
 
             Lead lead = command.Request.Adapt<Lead>();
