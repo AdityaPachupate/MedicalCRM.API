@@ -3,4 +3,4 @@ using MediatR;
 
 namespace CRM.API.Features.Rejoin.DeleteRejoin;
 
-public record DeleteRejoinCommand(Guid Id, bool IsPermanent = false) : IRequest<DeleteRejoinResponse>;
+public record DeleteRejoinCommand(DeleteRejoinRequest Request) : IRequest<DeleteRejoinResponse>;

@@ -20,7 +20,6 @@ public class RejoinRecordConfiguration : IEntityTypeConfiguration<RejoinRecord>
                .WithOne(b => b.RejoinRecord)
                .HasForeignKey<Bill>(b => b.RejoinRecordId);
 
-
-
+        builder.HasQueryFilter(r => !r.IsDeleted);
     }
 }

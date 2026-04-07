@@ -13,17 +13,17 @@ public class RestoreRejoinHandler(AppDbContext db, ILogger<RestoreRejoinHandler>
 {
     public async Task<RestoreRejoinResponse> Handle(RestoreRejoinCommand command, CancellationToken ct)
     {
-        var record = await db.RejoinRecords.IgnoreQueryFilters().FirstOrDefaultAsync(r => r.Id == command.Id, ct);
+        var record = await db.RejoinRecords.IgnoreQueryFilters().FirstOrDefaultAsync(r => r.Id == command.Request.Id, ct);
         if (record == null)
         {
-            logger.LogWarning("{Message}: RejoinRecord {Id} not found.", LoggingMessages.NotFound, command.Id);
-            throw new BusinessException(LoggingMessages.NotFound, $"RejoinRecord {command.Id} not found.", HttpStatusCode.NotFound);
+            logger.LogWarning("{Message}: RejoinRecord {Id} not found.", LoggingMessages.NotFound, command.Request.Id);
+            throw new BusinessException(LoggingMessages.NotFound, $"RejoinRecord {command.Request.Id} not found.", HttpStatusCode.NotFound);
         }
 
         if (!record.IsDeleted)
         {
-            logger.LogWarning("{Message}: RejoinRecord {Id} is not currently deleted.", LoggingMessages.ValidationFailed, command.Id);
-            throw new BusinessException(LoggingMessages.ValidationFailed, $"RejoinRecord {command.Id} is not deleted.", HttpStatusCode.BadRequest);
+            logger.LogWarning("{Message}: RejoinRecord {Id} is not currently deleted.", LoggingMessages.ValidationFailed, command.Request.Id);
+            throw new BusinessException(LoggingMessages.ValidationFailed, $"RejoinRecord {command.Request.Id} is not deleted.", HttpStatusCode.BadRequest);
         }
 
         record.IsDeleted = false;

@@ -32,6 +32,17 @@ namespace CRM.API.Common.Interfaces
         Task ReattachBillToEnrollmentAsync(Guid enrollmentId, CancellationToken ct);
 
         /// <summary>
+        /// Unlinks a Bill from a RejoinRecord (e.g. when rejoin is deleted)
+        /// but preserves the lead/debt record.
+        /// </summary>
+        Task DetachBillFromRejoinAsync(Guid rejoinId, CancellationToken ct);
+
+        /// <summary>
+        /// Restores a link between a RejoinRecord and its Bill.
+        /// </summary>
+        Task ReattachBillToRejoinAsync(Guid rejoinId, Guid billId, CancellationToken ct);
+
+        /// <summary>
         /// Adds new medicine items to an existing bill and recalculates totals.
         /// </summary>
         Task AddMedicineToBillAsync(Guid billId, IEnumerable<(Guid MedicineId, int Quantity)> items, CancellationToken ct);

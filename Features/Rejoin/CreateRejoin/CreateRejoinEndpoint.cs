@@ -13,7 +13,7 @@ public class CreateRejoinEndpoint : IEndpoint
     {
         app.MapPost("/rejoins", async ([FromBody] CreateRejoinRequest request, IMediator mediator, CancellationToken cancellationToken) =>
         {
-            var command = new CreateRejoinCommand(request.LeadId, request.PackageId, request.StartDate);
+            var command = new CreateRejoinCommand(request);
             var result = await mediator.Send(command, cancellationToken);
             return Results.Created($"/rejoins/{result.Id}", result);
         })

@@ -14,7 +14,6 @@ public class GetRejoinByIdHandler(AppDbContext db, ILogger<GetRejoinByIdHandler>
     {
         var record = await db.RejoinRecords
             .AsNoTracking()
-            .IgnoreQueryFilters()
             .Where(r => r.Id == query.Id)
             .Select(r => new GetRejoinByIdResponse(
                 r.Id,

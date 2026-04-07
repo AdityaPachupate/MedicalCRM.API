@@ -6,8 +6,8 @@ public class CreateRejoinValidator : AbstractValidator<CreateRejoinCommand>
 {
     public CreateRejoinValidator()
     {
-        RuleFor(x => x.LeadId).NotEmpty();
-        RuleFor(x => x.PackageId).NotEmpty();
-        RuleFor(x => x.StartDate).NotEmpty();
+        RuleFor(x => x.Request.LeadId).NotEmpty();
+        RuleFor(x => x.Request.PackageId).NotEmpty();
+        RuleFor(x => x.Request.StartDate).NotEmpty();
     }
 }

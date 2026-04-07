@@ -59,8 +59,7 @@ namespace CRM.API.Features.Enrollments.UpdateEnrollment
             if (enrollment.Bill != null)
             {
                 enrollment.Bill.InitialAmount = enrollment.PackageCostSnapshot;
-                billRepository.RecalculateTotals(enrollment.Bill); // Use Repository method
-                await billRepository.UpdateBillAsync(enrollment.Bill, ct);
+                billRepository.RecalculateTotals(enrollment.Bill);
             }
 
             // Dates

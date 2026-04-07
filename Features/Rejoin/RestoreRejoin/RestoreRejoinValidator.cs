@@ -6,6 +6,6 @@ public class RestoreRejoinValidator : AbstractValidator<RestoreRejoinCommand>
 {
     public RestoreRejoinValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Request.Id).NotEmpty();
     }
 }

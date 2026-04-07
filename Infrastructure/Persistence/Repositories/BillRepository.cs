@@ -127,9 +127,34 @@ namespace CRM.API.Infrastructure.Persistence.Repositories
             }
         }
 
-        public Task ReattachBillToEnrollmentAsync(Guid enrollmentId, CancellationToken ct)
+        public async Task ReattachBillToEnrollmentAsync(Guid enrollmentId, CancellationToken ct)
         {
-            return Task.CompletedTask;
+            // Implementation for reattaching if needed
+            await Task.CompletedTask;
+        }
+
+        public async Task DetachBillFromRejoinAsync(Guid rejoinId, CancellationToken ct)
+        {
+            var bill = await db.Bills
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(b => b.RejoinRecordId == rejoinId, ct);
+            if (bill != null)
+            {
+                bill.RejoinRecordId = null; // Unlink but keep the record
+                await db.SaveChangesAsync(ct);
+            }
+        }
+
+        public async Task ReattachBillToRejoinAsync(Guid rejoinId, Guid billId, CancellationToken ct)
+        {
+            var bill = await db.Bills
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(b => b.Id == billId, ct);
+            if (bill != null)
+            {
+                bill.RejoinRecordId = rejoinId;
+                await db.SaveChangesAsync(ct);
+            }
         }
 
         public async Task AddMedicineToBillAsync(Guid billId, IEnumerable<(Guid MedicineId, int Quantity)> items, CancellationToken ct)

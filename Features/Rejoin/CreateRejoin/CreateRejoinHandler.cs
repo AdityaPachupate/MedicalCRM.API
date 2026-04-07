@@ -20,30 +20,30 @@ public class CreateRejoinHandler(AppDbContext db, ILogger<CreateRejoinHandler> l
         // 1. Fetch Related Entities
         var lead = await db.Leads
             .Include(l => l.FollowUps)
-            .FirstOrDefaultAsync(l => l.Id == command.LeadId, ct);
+            .FirstOrDefaultAsync(l => l.Id == command.Request.LeadId, ct);
             
         if (lead == null)
         {
-            logger.LogWarning("{Message}: Fetching Lead with ID {LeadId} not found", LoggingMessages.NotFound, command.LeadId);
-            throw new BusinessException(LoggingMessages.NotFound, $"Lead {command.LeadId} not found", HttpStatusCode.NotFound);
+            logger.LogWarning("{Message}: Fetching Lead with ID {LeadId} not found", LoggingMessages.NotFound, command.Request.LeadId);
+            throw new BusinessException(LoggingMessages.NotFound, $"Lead {command.Request.LeadId} not found", HttpStatusCode.NotFound);
         }
         
-        var package = await db.Packages.FindAsync([command.PackageId], ct);
+        var package = await db.Packages.FindAsync([command.Request.PackageId], ct);
         
         if (package == null)
         {
-            logger.LogWarning("{Message}: Fetching Package with ID {PackageId} not found", LoggingMessages.NotFound, command.PackageId);
-            throw new BusinessException(LoggingMessages.NotFound, $"Package {command.PackageId} not found", HttpStatusCode.NotFound);
+            logger.LogWarning("{Message}: Fetching Package with ID {PackageId} not found", LoggingMessages.NotFound, command.Request.PackageId);
+            throw new BusinessException(LoggingMessages.NotFound, $"Package {command.Request.PackageId} not found", HttpStatusCode.NotFound);
         }
 
         // 2. Pre-condition: Check for active enrollment
         var hasActiveEnrollment = await db.Enrollments
-            .AnyAsync(e => e.LeadId == command.LeadId && e.EndDate >= command.StartDate && !e.IsDeleted, ct);
+            .AnyAsync(e => e.LeadId == command.Request.LeadId && e.EndDate >= command.Request.StartDate && !e.IsDeleted, ct);
 
         if (hasActiveEnrollment)
         {
-            logger.LogWarning("{Message}: Lead {LeadId} already has an active enrollment.", LoggingMessages.Conflict, command.LeadId);
-            throw new BusinessException(LoggingMessages.Conflict, $"Lead {command.LeadId} already has an active enrollment.", HttpStatusCode.Conflict);
+            logger.LogWarning("{Message}: Lead {LeadId} already has an active enrollment.", LoggingMessages.Conflict, command.Request.LeadId);
+            throw new BusinessException(LoggingMessages.Conflict, $"Lead {command.Request.LeadId} already has an active enrollment.", HttpStatusCode.Conflict);
         }
 
         // 3. Create RejoinRecord
@@ -52,8 +52,8 @@ public class CreateRejoinHandler(AppDbContext db, ILogger<CreateRejoinHandler> l
             Id = Guid.NewGuid(),
             LeadId = lead.Id,
             PackageId = package.Id,
-            StartDate = command.StartDate,
-            EndDate = command.StartDate.AddDays(package.DurationInDays),
+            StartDate = command.Request.StartDate,
+            EndDate = command.Request.StartDate.AddDays(package.DurationInDays),
             PackageCostSnapshot = package.Cost,
             PackageDurationSnapshot = package.DurationInDays,
             CreatedAt = DateTime.UtcNow

@@ -6,6 +6,6 @@ public class DeleteRejoinValidator : AbstractValidator<DeleteRejoinCommand>
 {
     public DeleteRejoinValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Request.Id).NotEmpty();
     }
 }

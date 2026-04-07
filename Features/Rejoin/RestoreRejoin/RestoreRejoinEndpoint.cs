@@ -11,9 +11,10 @@ public class RestoreRejoinEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/rejoins/{id:guid}/restore", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+        app.MapPost("/rejoins/{id}/restore", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
         {
-            var result = await mediator.Send(new RestoreRejoinCommand(id), cancellationToken);
+            var request = new RestoreRejoinRequest(id);
+            var result = await mediator.Send(new RestoreRejoinCommand(request), cancellationToken);
             return Results.Ok(result);
         })
         .WithName("RestoreRejoin")

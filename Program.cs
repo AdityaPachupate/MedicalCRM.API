@@ -55,8 +55,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<INotificationService, WhatsAppNotificationService>();
 builder.Services.AddScoped<IBillRepository, BillRepository>();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddMediatR(cfg => 
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 

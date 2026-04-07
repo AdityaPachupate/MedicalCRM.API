@@ -11,9 +11,10 @@ public class DeleteRejoinEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/rejoins/{id:guid}", async (Guid id, IMediator mediator, CancellationToken cancellationToken, [FromQuery] bool isPermanent = false) =>
+        app.MapDelete("/rejoins/{id}", async (Guid id, [FromQuery] bool isPermanent, IMediator mediator, CancellationToken cancellationToken) =>
         {
-            var result = await mediator.Send(new DeleteRejoinCommand(id, isPermanent), cancellationToken);
+            var request = new DeleteRejoinRequest(id, isPermanent);
+            var result = await mediator.Send(new DeleteRejoinCommand(request), cancellationToken);
             return Results.Ok(result);
         })
         .WithName("DeleteRejoin")

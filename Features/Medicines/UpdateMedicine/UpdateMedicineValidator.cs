@@ -13,7 +13,7 @@ namespace CRM.API.Features.Medicines.UpdateMedicine
                 .When(x => !string.IsNullOrEmpty(x.Request.Name));
 
             RuleFor(x => x.Request.Price)
-                .GreaterThanOrEqualTo(0).WithMessage("Price cannot be negative.")
+                .GreaterThan(0).WithMessage("Price must be greater than 0.")
                 .When(x => x.Request.Price.HasValue);
         }
     }
