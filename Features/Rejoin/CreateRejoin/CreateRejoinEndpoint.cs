@@ -15,7 +15,7 @@ public class CreateRejoinEndpoint : IEndpoint
         {
             var command = new CreateRejoinCommand(request.LeadId, request.PackageId, request.StartDate);
             var result = await mediator.Send(command, cancellationToken);
-            return Results.Created($"/api/rejoins/{result.Id}", result);
+            return Results.Created($"/rejoins/{result.Id}", result);
         })
         .WithName("CreateRejoin")
         .WithTags("Rejoins")

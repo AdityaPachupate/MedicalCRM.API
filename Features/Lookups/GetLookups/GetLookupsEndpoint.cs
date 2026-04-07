@@ -14,7 +14,7 @@ namespace CRM.API.Features.Lookups.GetLookups
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/lookups", async (
+            app.MapGet("/lookups", async (
                 [AsParameters] GetLookupsQuery query,
                 IMediator mediator,
                 CancellationToken cancellationToken)

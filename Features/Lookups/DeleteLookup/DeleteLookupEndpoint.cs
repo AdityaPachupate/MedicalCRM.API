@@ -13,7 +13,7 @@ namespace CRM.API.Features.Lookups.DeleteLookup
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/lookups/{id:guid}", async (
+            app.MapDelete("/lookups/{id:guid}", async (
                 Guid id,
                 [FromQuery] bool? isPermanent,
                 IMediator mediator,

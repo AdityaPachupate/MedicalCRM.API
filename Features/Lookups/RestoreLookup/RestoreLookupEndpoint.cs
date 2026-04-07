@@ -13,7 +13,7 @@ namespace CRM.API.Features.Lookups.RestoreLookup
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/lookups/{id:guid}/restore", async (
+            app.MapPost("/lookups/{id:guid}/restore", async (
                 Guid id,
                 IMediator mediator,
                 CancellationToken ct) =>

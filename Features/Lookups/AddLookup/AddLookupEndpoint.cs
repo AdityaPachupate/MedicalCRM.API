@@ -12,7 +12,7 @@ namespace CRM.API.Features.Lookups.AddLookup
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/lookups", async (
+            app.MapPost("/lookups", async (
                 [FromBody] AddLookupRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken)

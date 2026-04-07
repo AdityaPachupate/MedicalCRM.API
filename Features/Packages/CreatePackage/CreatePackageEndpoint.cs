@@ -19,7 +19,7 @@ namespace CRM.API.Features.Packages.CreatePackage
                 =>
             {
                 var result = await mediator.Send(new CreatePackageCommand(request), cancellationToken);
-                return Results.Created($"/api/packages/{result.Id}", result);
+                return Results.Created($"/packages/{result.Id}", result);
             })
             .WithName("CreatePackage")
             .WithTags("Packages")
