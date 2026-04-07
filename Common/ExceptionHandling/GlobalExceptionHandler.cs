@@ -32,6 +32,7 @@ namespace CRM.API.Common.ExceptionHandling
             {
                 BusinessException be => (be.StatusCode, "Business Error", be.ActionDescription),
                 ValidationException => (HttpStatusCode.BadRequest, "Validation Error", "validating the request data"),
+                BadHttpRequestException => (HttpStatusCode.BadRequest, "Bad Request", "parsing the request body"),
                 InvalidOperationException => (HttpStatusCode.Conflict, "Logic Error", $"executing {httpContext.Request.Method} {httpContext.Request.Path}"),
                 UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Unauthorized", $"executing {httpContext.Request.Method} {httpContext.Request.Path}"),
                 KeyNotFoundException => (HttpStatusCode.NotFound, "Not Found", "finding the requested resource"),
