@@ -21,12 +21,6 @@ namespace CRM.API.Features.Lookups.AddLookup
             RuleFor(x => x.Request.DisplayName)
                 .NotEmpty().WithMessage("Display Name is required.")
                 .MaximumLength(100).WithMessage("Display Name cannot exceed 100 characters.");
-
-            // Uniqueness check for Code within Category
-            RuleFor(x => x.Request)
-                .MustAsync(async (req, ct) => 
-                    !await db.LookupValues.AnyAsync(l => l.Category == req.Category && l.Code == req.Code, ct))
-                .WithMessage(x => $"A lookup value with the Category '{x.Request.Category}' and Code '{x.Request.Code}' already exists.");
         }
     }
 }

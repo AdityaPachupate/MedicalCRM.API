@@ -19,12 +19,6 @@ namespace CRM.API.Features.Packages.CreatePackage
             RuleFor(x => x.Request.Cost)
                 .NotEmpty().WithMessage("Cost is required")
                 .GreaterThanOrEqualTo(0).WithMessage("Cost cannot be negative");
-
-            // Uniqueness check for Name
-            RuleFor(x => x.Request.Name)
-                .MustAsync(async (name, ct) => 
-                    !await db.Packages.AnyAsync(p => p.Name == name && !p.IsDeleted, ct))
-                .WithMessage(x => $"A package with the name '{x.Request.Name}' already exists.");
         }
     }
 }
